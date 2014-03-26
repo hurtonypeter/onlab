@@ -1,0 +1,23 @@
+﻿@model Perseus.Models.Role
+@{
+    ViewBag.Title = "Szerepkör hozzáadása";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>AddRole</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name)
+        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Name)
+    </div>
+    <p>
+        @Html.ActionLink("Cancel", "Roles", "People", null, new { @class = "btn btn-default" })
+        <input type="submit" value="Save" class="btn btn-success" />
+    </p>
+}

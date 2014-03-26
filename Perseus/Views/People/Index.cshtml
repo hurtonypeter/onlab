@@ -1,0 +1,73 @@
+﻿@model List<Perseus.Models.User>
+@{
+    ViewBag.Title = "Felhasználók";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="float:left;">
+    <a href="/People/CreateAccount" class="btn purple-stripe"><i class="icon-plus"></i> Új felhasználó létrehozása</a>
+</p>
+<p style="float:right;">
+    <a href="/People/Roles" class="btn blue-stripe"><i class="icon-tags"></i> Szerepkörök</a>&nbsp;&nbsp;
+    <a href="/People/Permissions" class="btn green-stripe"><i class="icon-check"></i> Jogosultságok</a>
+</p>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Felhasználónév</th>
+            <th>E-mail</th>
+            <th>Szerepkörök</th>
+            <th>Regisztrált</th>
+            <th>Utolsó bejelentkezés</th>
+            <th>Állapot</th>
+            <th>Műveletek</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @foreach (var role in item.Role)
+                    {
+                        @role.Name <br />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Created)
+                </td>
+                <td>
+                    @if (item.LastLogin == null)
+                    {
+                        <text>soha</text>
+                    }
+                    else
+                    {
+                        @item.LastLogin
+                    }
+                </td>
+                <td>
+                    @if ((bool)item.Status)
+                    {
+                        <text><span class="label label-success">aktív</span></text>
+                    }
+                    else
+                    {
+                        <text><span class="label label-inverse">zárolt</span></text>
+                    }
+                </td>
+                <td>
+                    <a href="/People/EditUser/@item.UserId" class="btn mini purple"><i class="icon-edit"></i> Szerkesztés</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,74 @@
+﻿@model Perseus.Models.PermissionsTableModel
+@{
+    ViewBag.Title = "Permission";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int colspan = Model.Roles.Count + 1;
+    int c = 0;
+}
+
+<h2>Permission</h2>
+
+<p style="float:right;">
+    <a href="/People/Index" class="btn green-stripe"><i class="icon-check"></i> Felhasználók</a>&nbsp;&nbsp;
+    <a href="/People/Roles" class="btn blue-stripe"><i class="icon-tags"></i> Szerepkörök</a>
+</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <table class="table table-consored table-hover">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                @for (int i = 0; i < Model.Roles.Count; i++)
+                {
+                    <th>
+                        @Html.DisplayFor(s => Model.Roles[i].Name, new { name = "Roles[" + i + "].name" })
+                        @Html.HiddenFor(s => Model.Roles[i].Name, new { name = "Roles[" + i + "].name" })
+                        @Html.HiddenFor(s => Model.Roles[i].Id, new { name = "Roles[" + i + "].rid" })
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Modules.Count; i++)
+            {
+                <tr>
+                    <td colspan="@colspan">
+                        <b>
+                            @Html.DisplayFor(m => Model.Modules[i].ModuleName, new { name = "Modules[" + i + "].ModuleName" })
+                        @Html.HiddenFor(m => Model.Modules[i].ModuleName, new { name = "Modules[" + i + "].ModuleName" })
+                    </b>
+                </td>
+            </tr>
+
+                for (int j = 0; j < Model.Modules[i].AccessLevels.Count; j++)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => Model.Modules[i].AccessLevels[j].Name,
+                                                    new { name = "Modules[" + i + "].AccessLevels[" + j + "].Name" })
+                            @Html.HiddenFor(m => Model.Modules[i].AccessLevels[j].Name,
+                                                    new { name = "Modules[" + i + "].AccessLevels[" + j + "].Name" })
+                            @Html.HiddenFor(m => Model.Modules[i].AccessLevels[j].Pid,
+                                                    new { name = "Modules[" + i + "].AccessLevels[" + j + "].Pid" })
+                        </td>
+                        @for (int k = 0; k < Model.Modules[i].AccessLevels[j].Boxes.Count; k++)
+                        {
+                            <td>
+                                @Html.CheckBoxFor(b => Model.Modules[i].AccessLevels[j].Boxes[k],
+                                                          new { name = "Modules[" + i + "].AccessLevels[" + j + "].Boxes[" + k + "]", @class = "colid_" + c + " " + Model.Roles[k].Name, colid = c })
+                                @Html.HiddenFor(b => Model.Modules[i].AccessLevels[j].Boxes[k],
+                                                        new { name = "Modules[" + i + "].AccessLevels[" + j + "].Boxes[" + k + "]" })
+                            </td>
+                        }
+                    </tr>
+                        c++;
+                }
+            }
+        </tbody>
+    </table>
+    <div style="text-align:right;">
+        <button type="submit" class="btn green">Mentés</button>
+    </div>
+}
