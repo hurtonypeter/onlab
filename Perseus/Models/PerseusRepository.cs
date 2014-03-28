@@ -48,7 +48,8 @@ namespace Perseus.Models
 
             if (model.Password != null)
             {
-                UserManager.PasswordHasher.HashPassword(model.Password);
+                user.PasswordHash = UserManager.PasswordHasher.HashPassword(model.Password);
+                
             }
 
             List<string> removeIndex = new List<string>();

@@ -9,9 +9,9 @@
         <EntityTypeShape EntityType="Model.Permission" Width="1.5" PointX="3" PointY="2.5" />
         <EntityTypeShape EntityType="Model.Role" Width="1.5" PointX="5.25" PointY="2.625" />
         <EntityTypeShape EntityType="Model.User" Width="1.5" PointX="7.5" PointY="1.125" />
-        <EntityTypeShape EntityType="Model.UserClaim" Width="1.5" PointX="9.75" PointY="3.75" />
-        <EntityTypeShape EntityType="Model.UserLogin" Width="1.5" PointX="9.75" PointY="1.25" />
-        <AssociationConnector Association="Model.FK_dbo_Permisson_dbo_Module_ModuleId" />
+        <EntityTypeShape EntityType="Model.UserClaim" Width="1.5" PointX="9.75" PointY="1.25" />
+        <EntityTypeShape EntityType="Model.UserLogin" Width="1.5" PointX="9.75" PointY="4" />
+        <AssociationConnector Association="Model.FK_dbo_Permission_dbo_Module_ModuleId" />
         <AssociationConnector Association="Model.FK_dbo_UserClaim_dbo_User_UserId" />
         <AssociationConnector Association="Model.FK_dbo_UserLogin_dbo_User_UserId" />
         <AssociationConnector Association="Model.RolePermission" />

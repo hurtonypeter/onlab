@@ -80,7 +80,7 @@ namespace Perseus.Models
     public class ApplicationPermission
     {
         [Key]
-        public string PermissionId { get; set; }
+        public int PermissionId { get; set; }
         public string Name { get; set; }
         public int ModuleId { get; set; }
         public virtual ICollection<ApplicationRole> Roles { get; set; }

@@ -1,17 +1,17 @@
 ﻿@model List<Perseus.Models.Role>
 @{
-    ViewBag.Title = "Role";
+    ViewBag.Title = "Szerepkörök";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>@ViewBag.Title</h2>
 
 <p style="float:left;">
-    <a href="/People/AddRole" class="btn purple-stripe"><i class="icon-plus"></i> Új szerepkör létrehozása</a>
+    <a href="/People/AddRole" class="btn btn-primary"><i class="icon-plus"></i> Új szerepkör létrehozása</a>
 </p>
 <p style="float:right;">
-    <a href="/People/Index" class="btn green-stripe"><i class="icon-check"></i> Felhasználók</a>&nbsp;&nbsp;
-    <a href="/People/Permissions" class="btn green-stripe"><i class="icon-check"></i> Jogosultságok</a>
+    <a href="/People/Index" class="btn btn-default"><i class="icon-check"></i> Felhasználók</a>&nbsp;&nbsp;
+    <a href="/People/Permissions" class="btn btn-default"><i class="icon-check"></i> Jogosultságok</a>
 </p>
 <table class="table table-bordered table-hover">
     <tr>
@@ -28,7 +28,8 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    <a href="/People/EditRole/@item.Id" class="btn mini purple"><i class="icon-edit"></i> Szerkesztés</a> <a href="javascript:;" rid="@item.Id" class="btn mini purple deletebutton"><i class="icon-trash"></i> Törlés</a>
+                    <a href="/People/EditRole/@item.Id" class="btn btn-default btn-xs"><i class="icon-edit"></i> Szerkesztés</a>
+                    <a href="javascript:;" rid="@item.Id" class="btn btn-danger btn-xs"><i class="icon-trash"></i> Törlés</a>
                 </td>
             </tr>
         }

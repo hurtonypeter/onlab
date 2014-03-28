@@ -1,16 +1,16 @@
 ﻿@model Perseus.Models.PermissionsTableModel
 @{
-    ViewBag.Title = "Permission";
+    ViewBag.Title = "Jogosultságok";
     Layout = "~/Views/Shared/_Layout.cshtml";
     int colspan = Model.Roles.Count + 1;
     int c = 0;
 }
 
-<h2>Permission</h2>
+<h2>@ViewBag.Title</h2>
 
 <p style="float:right;">
-    <a href="/People/Index" class="btn green-stripe"><i class="icon-check"></i> Felhasználók</a>&nbsp;&nbsp;
-    <a href="/People/Roles" class="btn blue-stripe"><i class="icon-tags"></i> Szerepkörök</a>
+    <a href="/People/Index" class="btn btn-default"><i class="icon-check"></i> Felhasználók</a>&nbsp;&nbsp;
+    <a href="/People/Roles" class="btn btn-default"><i class="icon-tags"></i> Szerepkörök</a>
 </p>
 
 @using (Html.BeginForm())
@@ -69,6 +69,6 @@
         </tbody>
     </table>
     <div style="text-align:right;">
-        <button type="submit" class="btn green">Mentés</button>
+        <button type="submit" class="btn btn-success">Mentés</button>
     </div>
 }

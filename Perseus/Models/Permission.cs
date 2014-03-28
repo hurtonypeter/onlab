@@ -19,7 +19,7 @@ namespace Perseus.Models
             this.Role = new HashSet<Role>();
         }
     
-        public string PermissionId { get; set; }
+        public int PermissionId { get; set; }
         public string Name { get; set; }
         public int ModuleId { get; set; }
     

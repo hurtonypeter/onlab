@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>EditUser</h2>
+<h2>@ViewBag.Title</h2>
 
 <div class="row">
 @using (Html.BeginForm("EditUser", "People", FormMethod.Post, new  { @class = "clearfix", role = "form" }))

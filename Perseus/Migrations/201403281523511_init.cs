@@ -17,10 +17,10 @@ namespace Perseus.Migrations
                 .PrimaryKey(t => t.ModuleId);
             
             CreateTable(
-                "dbo.Permisson",
+                "dbo.Permission",
                 c => new
                     {
-                        PermissionId = c.String(nullable: false, maxLength: 128),
+                        PermissionId = c.Int(nullable: false, identity: true),
                         Name = c.String(),
                         ModuleId = c.Int(nullable: false),
                     })
@@ -105,11 +105,11 @@ namespace Perseus.Migrations
                 "dbo.RolePermission",
                 c => new
                     {
-                        ApplicationPermission_PermissionId = c.String(nullable: false, maxLength: 128),
+                        ApplicationPermission_PermissionId = c.Int(nullable: false),
                         ApplicationRole_Id = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => new { t.ApplicationPermission_PermissionId, t.ApplicationRole_Id })
-                .ForeignKey("dbo.Permisson", t => t.ApplicationPermission_PermissionId, cascadeDelete: true)
+                .ForeignKey("dbo.Permission", t => t.ApplicationPermission_PermissionId, cascadeDelete: true)
                 .ForeignKey("dbo.Role", t => t.ApplicationRole_Id, cascadeDelete: true)
                 .Index(t => t.ApplicationPermission_PermissionId)
                 .Index(t => t.ApplicationRole_Id);
@@ -122,9 +122,9 @@ namespace Perseus.Migrations
             DropForeignKey("dbo.UserLogin", "UserId", "dbo.User");
             DropForeignKey("dbo.UserClaim", "UserId", "dbo.User");
             DropForeignKey("dbo.RolePermission", "ApplicationRole_Id", "dbo.Role");
-            DropForeignKey("dbo.RolePermission", "ApplicationPermission_PermissionId", "dbo.Permisson");
+            DropForeignKey("dbo.RolePermission", "ApplicationPermission_PermissionId", "dbo.Permission");
             DropForeignKey("dbo.UserRole", "RoleId", "dbo.Role");
-            DropForeignKey("dbo.Permisson", "ModuleId", "dbo.Module");
+            DropForeignKey("dbo.Permission", "ModuleId", "dbo.Module");
             DropIndex("dbo.RolePermission", new[] { "ApplicationRole_Id" });
             DropIndex("dbo.RolePermission", new[] { "ApplicationPermission_PermissionId" });
             DropIndex("dbo.UserLogin", new[] { "UserId" });
@@ -133,14 +133,14 @@ namespace Perseus.Migrations
             DropIndex("dbo.UserRole", new[] { "RoleId" });
             DropIndex("dbo.UserRole", new[] { "UserId" });
             DropIndex("dbo.Role", "RoleNameIndex");
-            DropIndex("dbo.Permisson", new[] { "ModuleId" });
+            DropIndex("dbo.Permission", new[] { "ModuleId" });
             DropTable("dbo.RolePermission");
             DropTable("dbo.UserLogin");
             DropTable("dbo.UserClaim");
             DropTable("dbo.User");
             DropTable("dbo.UserRole");
             DropTable("dbo.Role");
-            DropTable("dbo.Permisson");
+            DropTable("dbo.Permission");
             DropTable("dbo.Module");
         }
     }

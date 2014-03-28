@@ -43,15 +43,15 @@ namespace Perseus.Models
     }
     public class ModuleRolesLine
     {
-        public string Pid { get; set; }
+        public int Pid { get; set; }
         public string Name { get; set; }
         public List<bool> Boxes { get; set; }
 
         public ModuleRolesLine() { Boxes = new List<bool>(); }
-        public ModuleRolesLine(string pid, string name, List<bool> boxes)
+        public ModuleRolesLine(int pid, string name, List<bool> boxes)
         {
             Pid = pid; Name = name; Boxes = boxes;
         }
-        public ModuleRolesLine(string pid, string name) { Pid = pid; Name = name; Boxes = new List<bool>(); }
+        public ModuleRolesLine(int pid, string name) { Pid = pid; Name = name; Boxes = new List<bool>(); }
     }
 }
