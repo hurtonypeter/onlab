@@ -346,13 +346,6 @@ namespace Perseus.Models
         {
         }
     }
-    public class ApplicationRoleManager : RoleManager<ApplicationRole, string>
-    {
-        public ApplicationRoleManager(IRoleStore<ApplicationRole, string> store) : base (store)
-        {
-
-        }
-    }
     public class ApplicationUserManager : UserManager<ApplicationUser, string>
     {
         public ApplicationUserManager(IUserStore<ApplicationUser, string> store)
@@ -378,6 +371,14 @@ namespace Perseus.Models
             manager.PasswordHasher = new AppPasswordHasher() { DbContext = context.Get<ApplicationDbContext>() };
 
             return manager;
+        }
+    }
+    public class ApplicationRoleManager : RoleManager<ApplicationRole, string>
+    {
+        public ApplicationRoleManager(IRoleStore<ApplicationRole, string> store)
+            : base(store)
+        {
+
         }
     }
 

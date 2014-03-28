@@ -124,5 +124,52 @@ namespace Perseus.Controllers
             
             return View(model);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Permissions(PermissionsTableModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // TODO: a mappinget átmozgatni a MappingHelperbe
+                    List<Role> roles = db.GetAllRole().ToList();
+                    List<Permission> permissions = db.GetAllPermission().ToList();
+                    List<Module> modules = db.GetModules().ToList();
+
+                    for (int i = 0; i < model.Modules.Count; i++)
+                    {
+                        for (int j = 0; j < model.Modules[i].AccessLevels.Count; j++)
+                        {
+                            for (int k = 0; k < model.Modules[i].AccessLevels[j].Boxes.Count; k++)
+                            {
+                                if (model.Modules[i].AccessLevels[j].Boxes[k])
+                                {
+                                    if (permissions.SingleOrDefault(p => p.PermissionId == model.Modules[i].AccessLevels[j].Pid).Role.Contains(roles.SingleOrDefault(r => r.Id.Equals(model.Roles[k].Id))) == false)
+                                    {
+                                        db.AddRoleToPermission(model.Roles[k].Id, model.Modules[i].AccessLevels[j].Pid);
+                                    }
+                                }
+                                else
+                                {
+                                    if (permissions.SingleOrDefault(p => p.PermissionId == model.Modules[i].AccessLevels[j].Pid).Role.Contains(roles.SingleOrDefault(r => r.Id.Equals(model.Roles[k].Id))) == true)
+                                    {
+                                        db.DeleteRoleFromPermission(model.Roles[k].Id, model.Modules[i].AccessLevels[j].Pid);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return RedirectToAction("Permissions", "People");
+                }
+                catch (Exception e)
+                {
+                    ModelState.AddModelError("", e.ToString());
+                }
+            }
+
+            return View(model);
+        }
 	}
 }

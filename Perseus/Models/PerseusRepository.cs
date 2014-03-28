@@ -113,5 +113,17 @@ namespace Perseus.Models
         {
             return db.Module;
         }
+        public void AddRoleToPermission(string rid, int pid)
+        {
+            Role role = GetRoleById(rid);
+            db.Permission.SingleOrDefault(p => p.PermissionId == pid).Role.Add(role);
+            Save();
+        }
+        public void DeleteRoleFromPermission(string rid, int pid)
+        {
+            Role role = GetRoleById(rid);
+            db.Permission.SingleOrDefault(p => p.PermissionId == pid).Role.Remove(role);
+            Save();
+        }
     }
 }
