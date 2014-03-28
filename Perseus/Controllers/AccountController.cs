@@ -4,6 +4,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Owin;
 using Perseus.Models;
+using Perseus.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,28 +99,18 @@ namespace Perseus.Controllers
                 };
                 user.Created = DateTime.Now;
                 user.LastLogin = null;
-                try{
-                    var result = await UserManager.CreateAsync(user, model.Password);
-                    if (result.Succeeded)
-                    {
-                        await SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                    {
-                        AddErrors(result);
-                    }
-                }
-                catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
+                
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
                 {
-                    foreach (var validationErrors in dbEx.EntityValidationErrors)
-                    {
-                        foreach (var validationError in validationErrors.ValidationErrors)
-                        {
-                            System.Diagnostics.Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
-                        }
-                    }
+                    await SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Index", "Home");
                 }
+                else
+                {
+                    AddErrors(result);
+                }
+                
                 
                 
             }

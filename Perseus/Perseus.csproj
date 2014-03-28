@@ -187,47 +187,47 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Migrations\201403281523511_init.cs" />
     <Compile Include="Migrations\201403281523511_init.Designer.cs">
       <DependentUpon>201403281523511_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="DataModel\IdentityModels.cs" />
     <Compile Include="Models\MappingHelper.cs" />
-    <Compile Include="Models\Module.cs">
+    <Compile Include="DataModel\Module.cs">
       <DependentUpon>Perseus.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Permission.cs">
+    <Compile Include="DataModel\Permission.cs">
       <DependentUpon>Perseus.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\PermissionModels.cs" />
-    <Compile Include="Models\Perseus.Context.cs">
+    <Compile Include="DataModel\Perseus.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Perseus.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Perseus.cs">
+    <Compile Include="DataModel\Perseus.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Perseus.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Perseus.Designer.cs">
+    <Compile Include="DataModel\Perseus.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Perseus.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\PerseusRepository.cs" />
-    <Compile Include="Models\Role.cs">
+    <Compile Include="DataModel\PerseusRepository.cs" />
+    <Compile Include="DataModel\Role.cs">
       <DependentUpon>Perseus.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\User.cs">
+    <Compile Include="DataModel\User.cs">
       <DependentUpon>Perseus.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\UserClaim.cs">
+    <Compile Include="DataModel\UserClaim.cs">
       <DependentUpon>Perseus.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\UserLogin.cs">
+    <Compile Include="DataModel\UserLogin.cs">
       <DependentUpon>Perseus.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -252,19 +252,19 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
-    <EntityDeploy Include="Models\Perseus.edmx">
+    <EntityDeploy Include="DataModel\Perseus.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Perseus.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\Perseus.Context.tt">
+    <Content Include="DataModel\Perseus.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Perseus.edmx</DependentUpon>
       <LastGenOutput>Perseus.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\Perseus.edmx.diagram">
+    <Content Include="DataModel\Perseus.edmx.diagram">
       <DependentUpon>Perseus.edmx</DependentUpon>
     </Content>
-    <Content Include="Models\Perseus.tt">
+    <Content Include="DataModel\Perseus.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Perseus.edmx</DependentUpon>
       <LastGenOutput>Perseus.cs</LastGenOutput>
@@ -317,6 +317,8 @@
     <Content Include="Views\People\Permissions.cshtml" />
     <Content Include="Views\People\EditUser.cshtml" />
     <Content Include="Views\People\AddRole.cshtml" />
+    <Content Include="Views\People\EditRole.cshtml" />
+    <Content Include="Views\People\CreateAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

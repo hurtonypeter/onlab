@@ -2,6 +2,7 @@
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
+using Perseus.DataModel;
 using Perseus.Models;
 
 namespace Perseus

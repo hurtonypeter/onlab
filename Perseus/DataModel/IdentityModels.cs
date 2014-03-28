@@ -22,7 +22,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Perseus.Models
+namespace Perseus.DataModel
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser<string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>

@@ -7,21 +7,23 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Perseus.Models
+namespace Perseus.DataModel
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Module
+    public partial class Permission
     {
-        public Module()
+        public Permission()
         {
-            this.Permission = new HashSet<Permission>();
+            this.Role = new HashSet<Role>();
         }
     
+        public int PermissionId { get; set; }
+        public string Name { get; set; }
         public int ModuleId { get; set; }
-        public string ModuleName { get; set; }
     
-        public virtual ICollection<Permission> Permission { get; set; }
+        public virtual Module Module { get; set; }
+        public virtual ICollection<Role> Role { get; set; }
     }
 }

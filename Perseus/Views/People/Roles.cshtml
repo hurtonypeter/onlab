@@ -1,4 +1,4 @@
-﻿@model List<Perseus.Models.Role>
+﻿@model List<Perseus.DataModel.Role>
 @{
     ViewBag.Title = "Szerepkörök";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,24 +14,27 @@
     <a href="/People/Permissions" class="btn btn-default"><i class="icon-check"></i> Jogosultságok</a>
 </p>
 <table class="table table-bordered table-hover">
-    <tr>
-        <th>Név</th>
-        <th>Műveletek</th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
-        if (item.Name != "anonymous")
+    <thead>
+        <tr>
+            <th>Név</th>
+            <th>Műveletek</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
         {
-            <tr>
-                <td class="rolename">
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    <a href="/People/EditRole/@item.Id" class="btn btn-default btn-xs"><i class="icon-edit"></i> Szerkesztés</a>
-                    <a href="javascript:;" rid="@item.Id" class="btn btn-danger btn-xs"><i class="icon-trash"></i> Törlés</a>
-                </td>
-            </tr>
+            if (item.Name != "anonymous")
+            {
+                <tr>
+                    <td class="rolename">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <a href="/People/EditRole/@item.Id" class="btn btn-default btn-xs"><i class="icon-edit"></i> Szerkesztés</a>
+                        <a href="javascript:;" rid="@item.Id" class="btn btn-danger btn-xs"><i class="icon-trash"></i> Törlés</a>
+                    </td>
+                </tr>
+            }
         }
-    }
+    </tbody>
 </table>

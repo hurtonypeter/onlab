@@ -3,13 +3,16 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Owin;
+using Perseus.Helpers;
 using Perseus.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
+using System.Web.Routing;
 
-namespace Perseus.Models
+namespace Perseus.DataModel
 {
     public class PerseusRepository : IDisposable
     {
@@ -34,6 +37,21 @@ namespace Perseus.Models
         {
             return db.User.SingleOrDefault(s => s.UserId.Equals(id));
         }
+
+        //public void CreateNewUser(NewUserModel model)
+        //{
+        //    ApplicationUserManager um = new ApplicationUserManager(new ApplicationUserStore(new ApplicationDbContext()));
+        //    var user = new ApplicationUser()
+        //    {
+        //        Id = Guid.NewGuid().ToString(),
+        //        UserName = model.UserName,
+        //        //PasswordHash = um.PasswordHasher.HashPassword(StringHelper.RandomString(8, 10)),
+        //        Email = model.Email,
+        //        Created = DateTime.Now,
+        //        LastLogin = null
+        //    };
+        //    um.Create(user, um.PasswordHasher.HashPassword(StringHelper.RandomString(8, 10)));
+        //}
 
         public void EditUser(EditAccountModel model)
         {
@@ -82,6 +100,12 @@ namespace Perseus.Models
             Save();
         }
 
+        public void DeleteUserById(string id)
+        {
+            db.User.Remove(GetUserById(id));
+            Save();
+        }
+
         public IQueryable<Role> GetAllRole()
         {
             return db.Role;
@@ -103,7 +127,24 @@ namespace Perseus.Models
                 Id = Guid.NewGuid().ToString()
             });
         }
+        public void EditRole(Role model)
+        {
+            Role role = GetRoleById(model.Id);
+            role.Name = model.Name;
+            Save();
+        }
 
+        public void DeleteRoleById(string id)
+        {
+            Role role = GetRoleById(id);
+            // ha az anonymous rolet próbálnák törölni, ne hagyjuk:)
+            if (role.Name.Equals("anonymous") || role == null)
+            {
+                return;
+            }
+            db.Role.Remove(role);
+            Save();
+        }
 
         public IQueryable<Permission> GetAllPermission()
         {

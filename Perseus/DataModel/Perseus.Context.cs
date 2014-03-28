@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Perseus.Models
+namespace Perseus.DataModel
 {
     using System;
     using System.Data.Entity;

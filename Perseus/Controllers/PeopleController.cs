@@ -2,12 +2,15 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Perseus.Models;
+using Perseus.DataModel;
 using Perseus.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Threading.Tasks;
+using Perseus.Helpers;
 
 namespace Perseus.Controllers
 {
@@ -18,6 +21,54 @@ namespace Perseus.Controllers
         public ActionResult Index()
         {
             var model = db.GetAllUser().OrderBy(s => s.UserName).ToList();
+
+            return View(model);
+        }
+
+        public ActionResult CreateAccount()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateAccount(NewUserModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                ApplicationUserManager um = new ApplicationUserManager(new ApplicationUserStore(new ApplicationDbContext()));
+                var pass = StringHelper.RandomString(8, 10);
+                var user = new ApplicationUser()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = model.UserName,
+                    //PasswordHash = um.PasswordHasher.HashPassword(StringHelper.RandomString(8, 10)),
+                    Email = model.Email,
+                    Created = DateTime.Now,
+                    LastLogin = null
+                };
+                var result = um.Create(user, pass);
+                if(result.Succeeded)
+                {
+                    return RedirectToAction("Index", "People");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+                //try
+                //{
+                //    db.CreateNewUser(model);
+                //    return RedirectToAction("Index", "People");
+                //}
+                //catch (Exception e)
+                //{
+                //    ModelState.AddModelError("", e.ToString());
+                //}
+            }
 
             return View(model);
         }
@@ -55,6 +106,12 @@ namespace Perseus.Controllers
             }
             return View(model);
         }
+        public ActionResult DeleteUser(string id)
+        {
+            db.DeleteUserById(id);
+
+            return RedirectToAction("Index", "People");
+        }
 
         public ActionResult Roles()
         {
@@ -83,6 +140,45 @@ namespace Perseus.Controllers
             }
 
             return View(model);
+        }
+
+        public ActionResult EditRole(string id)
+        {
+            Role model = db.GetRoleById(id);
+
+            //az anonymous "role" nem szerkeszthető, törölhető
+            if (model.Name == "anonymous")
+                return RedirectToAction("Roles", "People");
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditRole(Role model)
+        {
+            //az anonymous "role" nem szerkeszthető, törölhető
+            if (model.Name == "anonymous")
+                return RedirectToAction("Roles", "People");
+
+            try
+            {
+                db.EditRole(model);
+                return RedirectToAction("Roles", "People");
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("", e.ToString());
+            }
+
+            return View(model);
+        }
+
+        public ActionResult DeleteRole(string id)
+        {
+            db.DeleteRoleById(id);
+
+            return RedirectToAction("Roles", "People");
         }
 
         public ActionResult Permissions()
