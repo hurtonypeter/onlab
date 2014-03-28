@@ -13,7 +13,7 @@ namespace Perseus.Controllers
 {
     public class PeopleController : Controller
     {
-        private PerseusRepository db = new PerseusRepository();
+        /*private PerseusRepository db = new PerseusRepository();
 
         public ActionResult Index()
         {
@@ -27,13 +27,12 @@ namespace Perseus.Controllers
             User user = db.GetUserById(id);
             EditAccountModel model = Mapper.Map<User, EditAccountModel>(user);
 
-            List<Role> allrole = db.GetAllRole().ToList();
+            //List<Role> allrole = db.GetAllRole().ToList();
             //List<Role> userroles = user.Role.ToList();
-            List<Role> userroles = new List<Role>();
-            foreach (var item in allrole)
-            {
-                model.Roles.Add(new RoleCheckBox(item.Name, userroles.Contains(item)));
-            }
+            //foreach (var item in allrole)
+            //{
+            //    model.Roles.Add(new RoleCheckBox(item.Name, userroles.Contains(item)));
+            //}
 
             return View(model);
         }
@@ -124,6 +123,6 @@ namespace Perseus.Controllers
             }
             
             return View(model);
-        }
+        }*/
 	}
 }

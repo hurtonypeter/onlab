@@ -16,12 +16,17 @@ namespace Perseus.Models
     {
         public User()
         {
-            this.UserClaims = new HashSet<UserClaims>();
-            this.UserLogins = new HashSet<UserLogins>();
-            this.UserRoles = new HashSet<UserRoles>();
+            this.UserClaim = new HashSet<UserClaim>();
+            this.UserLogin = new HashSet<UserLogin>();
+            this.Role = new HashSet<Role>();
         }
     
         public string UserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public bool Status { get; set; }
+        public System.DateTime Created { get; set; }
+        public Nullable<System.DateTime> LastLogin { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
         public string PasswordHash { get; set; }
@@ -33,15 +38,9 @@ namespace Perseus.Models
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
         public string UserName { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public Nullable<bool> Status { get; set; }
-        public Nullable<System.DateTime> Created { get; set; }
-        public Nullable<System.DateTime> LastLogin { get; set; }
-        public string Discriminator { get; set; }
     
-        public virtual ICollection<UserClaims> UserClaims { get; set; }
-        public virtual ICollection<UserLogins> UserLogins { get; set; }
-        public virtual ICollection<UserRoles> UserRoles { get; set; }
+        public virtual ICollection<UserClaim> UserClaim { get; set; }
+        public virtual ICollection<UserLogin> UserLogin { get; set; }
+        public virtual ICollection<Role> Role { get; set; }
     }
 }

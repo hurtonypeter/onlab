@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 
 namespace Perseus.Models
 {
@@ -26,7 +25,7 @@ namespace Perseus.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm new password")]
-        [System.Web.Mvc.Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
 
@@ -59,7 +58,7 @@ namespace Perseus.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [System.Web.Mvc.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
     public class EditAccountModel
@@ -96,8 +95,7 @@ namespace Perseus.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Jelszó megerősítése")]
-        //[System.Web.Mvc.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
         [Display(Name = "Szerepkörök")]
@@ -107,7 +105,7 @@ namespace Perseus.Models
         {
             Roles = new List<RoleCheckBox>();
         }
-
+    
     }
 
 }

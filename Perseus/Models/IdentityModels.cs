@@ -1,38 +1,77 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration;
+using System.Data.Entity.ModelConfiguration.Configuration;
+using System.Data.Entity.Validation;
+using System.Globalization;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace Perseus.Models
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {
+        [Key]
+        public override string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; set; }
         public bool Status { get; set; }
         public DateTime Created { get; set; }
         public DateTime? LastLogin { get; set; }
-        
-        public ApplicationUser(string userName)
+
+        /*public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
-            UserName = userName;
+            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
+            var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            // Add custom user claims here
+            return userIdentity;
+        }*/
+        
+        //public ApplicationUser(string userName)
+        //{
+        //    UserName = userName;
+        //}
+        public ApplicationUser() : base()
+        {
+            
         }
-        public ApplicationUser() { }
 
     }
 
-    
-    public class ApplicationRole : IdentityRole
+    public class ApplicationUserRole : IdentityUserRole<string> 
     {
-        public ApplicationRole() { }
-        public ApplicationRole(string name)
+        public ApplicationUserRole() : base() { }
+    }
+    public class ApplicationUserClaim : IdentityUserClaim<string> { }
+    public class ApplicationUserLogin : IdentityUserLogin<string> { }
+
+
+    public class ApplicationRole : IdentityRole<string, ApplicationUserRole>
+    {
+        public ApplicationRole() : base()
+        {
+            Permissions = new HashSet<ApplicationPermission>();
+        }
+        public ApplicationRole(string name) : base()
         {
             this.Name = name;
+            this.Permissions = new HashSet<ApplicationPermission>();
         }
         public virtual ICollection<ApplicationPermission> Permissions { get; set; }
     }
@@ -46,6 +85,10 @@ namespace Perseus.Models
         public int ModuleId { get; set; }
         public virtual ICollection<ApplicationRole> Roles { get; set; }
         public virtual ApplicationModule Module { get; set; }
+        public ApplicationPermission()
+        {
+            Roles = new HashSet<ApplicationRole>();
+        }
     }
 
     public class ApplicationModule
@@ -54,20 +97,136 @@ namespace Perseus.Models
         public int ModuleId { get; set; }
         public string ModuleName { get; set; }
         public virtual ICollection<ApplicationPermission> Permissions { get; set; }
+        public ApplicationModule()
+        {
+            Permissions = new HashSet<ApplicationPermission>();
+        }
     }
 
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {
-        public virtual IDbSet<ApplicationPermission> Permissions { get; set; }
         public virtual IDbSet<ApplicationModule> Modules { get; set; }
-        new public virtual IDbSet<ApplicationRole> Roles { get; set; }
+        public virtual IDbSet<ApplicationPermission> Permissions { get; set; }
+        //new public virtual IDbSet<ApplicationRole> Roles { get; set; }
+
+        //new public IDbSet<ApplicationUserRole> UserRole { get; set; }
+        //public override IDbSet<ApplicationUser> Users { get; set; }
+        //new public IDbSet<ApplicationUserClaim> UserClaims { get; set; }
+        //public IDbSet<ApplicationUserLogin> UserLogins { get; set; }
+
+        public static ApplicationDbContext Create()
+        {
+            return new ApplicationDbContext();
+        }
 
         public ApplicationDbContext()
             : base("DefaultConnection")
         {
-
         }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            var entity = modelBuilder.Entity<ApplicationUser>();
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).HasColumnName("UserId");
+            entity.HasMany(u => u.Roles).WithRequired().HasForeignKey(ur => ur.UserId);
+            entity.ToTable("User");
+
+            modelBuilder.Entity<ApplicationUserRole>().ToTable("UserRole");
+
+            modelBuilder.Entity<ApplicationRole>().ToTable("Role");
+
+            modelBuilder.Entity<ApplicationPermission>().ToTable("Permisson")
+                .HasMany(e => e.Roles)
+                .WithMany(e => e.Permissions)
+                .Map(m => m.ToTable("RolePermission").MapLeftKey("ApplicationPermission_PermissionId").MapRightKey("ApplicationRole_Id"));
+
+            modelBuilder.Entity<ApplicationModule>().ToTable("Module");
+
+            modelBuilder.Entity<ApplicationUserClaim>().ToTable("UserClaim");
+            modelBuilder.Entity<ApplicationUserLogin>().ToTable("UserLogin");
+        
+        }
+        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+        //    //// Keep this:
+        //    //modelBuilder.Entity<IdentityUser>().ToTable("User").Property(p => p.Id).HasColumnName("UserId");
+
+        //    //// Change TUser to ApplicationUser everywhere else - IdentityUser and ApplicationUser essentially 'share' the AspNetUsers Table in the database:
+        //    //EntityTypeConfiguration<ApplicationUser> table =
+        //    //    modelBuilder.Entity<ApplicationUser>().ToTable("User");
+        //    //table.Property(p => p.Id).HasColumnName("UserId");
+
+        //    //table.Property((ApplicationUser u) => u.UserName).IsRequired();
+
+        //    //// EF won't let us swap out IdentityUserRole for ApplicationUserRole here:
+        //    ////modelBuilder.Entity<ApplicationUser>().HasMany<IdentityUserRole>((ApplicationUser u) => u.Roles);
+        //    //modelBuilder.Entity<IdentityUserRole>().HasKey( r =>
+        //    //    new 
+        //    //    { 
+        //    //        UserId = r.UserId, 
+        //    //        RoleId = r.RoleId 
+        //    //    }).ToTable("UserRoles");
+
+        //    //// Leave this alone:
+        //    //EntityTypeConfiguration<IdentityUserLogin> entityTypeConfiguration =
+        //    //    modelBuilder.Entity<IdentityUserLogin>().HasKey((IdentityUserLogin l) =>
+        //    //        new
+        //    //        {
+        //    //            UserId = l.UserId,
+        //    //            LoginProvider = l.LoginProvider,
+        //    //            ProviderKey = l.ProviderKey
+        //    //        }).ToTable("UserLogin");
+
+        //    ////entityTypeConfiguration.HasRequired<IdentityUser>((IdentityUserLogin u) => u.User);
+        //    //modelBuilder.Entity<IdentityUserClaim>().ToTable("UserClaim");
+
+        //    //// Add this, so that IdentityRole can share a table with ApplicationRole:
+        //    //modelBuilder.Entity<IdentityRole>().ToTable("Role");
+
+        //    //// Change these from IdentityRole to ApplicationRole:
+        //    //EntityTypeConfiguration<ApplicationRole> entityTypeConfiguration1 = modelBuilder.Entity<ApplicationRole>().ToTable("Role");
+        //    //entityTypeConfiguration1.Property((ApplicationRole r) => r.Name).IsRequired();
+
+
+        //    //modelBuilder.Entity<ApplicationPermission>().ToTable("Permission")
+        //    //    .HasMany(e => e.Roles)
+        //    //    .WithMany(e => e.Permissions)
+        //    //    .Map(m => m.ToTable("RolePermission").MapLeftKey("Permission_Id").MapRightKey("Role_Id"));
+
+        //    //modelBuilder.Entity<ApplicationModule>().ToTable("Module");
+
+
+
+        //    //modelBuilder.Entity<ApplicationPermission>().ToTable("Permission");
+        //    //modelBuilder.Entity<ApplicationModule>().ToTable("Module");
+
+        //    //modelBuilder.Entity<ApplicationPermission>()
+        //    //    .HasMany(e => e.Roles)
+        //    //    .WithMany(e => e.Permissions)
+        //    //    .Map(m => m.ToTable("ApplicationRoleApplicationPermissions").MapLeftKey("ApplicationPermission_PermissionId").MapRightKey("ApplicationRole_Id"));
+
+        //    //modelBuilder.Entity<ApplicationRole>()
+        //    //    .HasMany(e => e.Users)
+        //    //    .WithMany(e => e.)
+        //    //    .Map(m => m.ToTable("UserRoles").MapLeftKey("RoleId").MapRightKey("UserId"));
+
+        //    //modelBuilder.Entity<ApplicationUser>()
+        //    //    .HasMany(e => e.Claims)
+        //    //    .WithRequired(e => e.User)
+        //    //    .WillCascadeOnDelete(false);
+
+        //    //modelBuilder.Entity<ApplicationUser>()
+        //    //    .HasMany(e => e.Logins)
+        //    //    .WithRequired(e => e.UserId)
+        //    //    .WillCascadeOnDelete(false);
+
+        //}
+
+        //működött már eccer
+        /*protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -79,11 +238,12 @@ namespace Perseus.Models
             modelBuilder.Entity<IdentityUserClaim>().ToTable("UserClaims");
 
             modelBuilder.Entity<IdentityRole>().ToTable("Role");
+            modelBuilder.Entity<ApplicationRole>().ToTable("Role")
+                .HasMany(e => e.Users);
 
             modelBuilder.Entity<ApplicationPermission>().ToTable("Permission");
             modelBuilder.Entity<ApplicationModule>().ToTable("Module");
-
-        }
+        }*/
 
        /* protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -172,4 +332,91 @@ namespace Perseus.Models
         }*/
     }
 
+    public class ApplicationUserStore : UserStore<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
+    {
+        public ApplicationUserStore(ApplicationDbContext context)
+            : base(context)
+        {
+        }
+    }
+    public class ApplicationRoleStore : RoleStore<ApplicationRole, string, ApplicationUserRole>
+    {
+        public ApplicationRoleStore(ApplicationDbContext context)
+            : base(context)
+        {
+        }
+    }
+    public class ApplicationUserManager : UserManager<ApplicationUser, string>
+    {
+        public ApplicationUserManager(IUserStore<ApplicationUser, string> store)
+            : base(store)
+        {
+
+        }
+
+        // Create method called once during the lifecycle of request
+        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
+        {
+            // Configure the userstore to use the DbContext to work with database
+            var manager = new ApplicationUserManager(new ApplicationUserStore(context.Get<ApplicationDbContext>()));
+
+            // The password validator enforces complexity on supplied password
+            manager.PasswordValidator = new PasswordValidator()
+            {
+                RequiredLength = 6,
+                RequireNonLetterOrDigit = true
+            };
+
+            // Use the custom password hasher to validate existing user credentials
+            manager.PasswordHasher = new AppPasswordHasher() { DbContext = context.Get<ApplicationDbContext>() };
+
+            return manager;
+        }
+    }
+
+    public class AppPasswordHasher : PasswordHasher
+    {
+        public ApplicationDbContext DbContext { get; set; }
+
+        // Custom hashing used before migrating to Identity
+        public static string GetMD5Hash(string value)
+        {
+            MD5 md5Hasher = MD5.Create();
+            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(value));
+            StringBuilder sBuilder = new StringBuilder();
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+            return sBuilder.ToString();
+        }
+
+        // Verify if the password is hashed using MD5. If yes, rehash using ASP.NET Identity Crypto which is more secure
+        // this is invoked when old users try to login. Eventually all the old the password are rehashed to a more secure hash
+        public override PasswordVerificationResult VerifyHashedPassword(string hashedPassword, string providedPassword)
+        {
+            if (String.Equals(hashedPassword, GetMD5Hash(providedPassword), StringComparison.InvariantCultureIgnoreCase))
+            {
+                ReHashPassword(hashedPassword, providedPassword);
+                return PasswordVerificationResult.Success;
+            }
+
+            return base.VerifyHashedPassword(hashedPassword, providedPassword);
+        }
+
+        // Rehash password using ASP.NET Identity Crypto
+        // Store it back into database
+        private void ReHashPassword(string hashedPassword, string providedPassword)
+        {
+
+            var user = DbContext.Users.Where(x => x.PasswordHash == hashedPassword).FirstOrDefault();
+
+            user.PasswordHash = base.HashPassword(providedPassword);
+
+            // Update SecurityStamp with new Guid to nullify any previous cookies
+            user.SecurityStamp = Guid.NewGuid().ToString();
+
+            DbContext.SaveChanges();
+        }
+    }
 }

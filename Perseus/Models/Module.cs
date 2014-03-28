@@ -16,12 +16,12 @@ namespace Perseus.Models
     {
         public Module()
         {
-            this.Permission = new HashSet<Permission>();
+            this.Permisson = new HashSet<Permisson>();
         }
     
         public int ModuleId { get; set; }
         public string ModuleName { get; set; }
     
-        public virtual ICollection<Permission> Permission { get; set; }
+        public virtual ICollection<Permisson> Permisson { get; set; }
     }
 }

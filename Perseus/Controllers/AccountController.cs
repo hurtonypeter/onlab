@@ -1,31 +1,45 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Owin;
+using Perseus.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Owin.Security;
-using Perseus.Models;
 
 namespace Perseus.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
+        
         public AccountController()
-            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+            
         {
         }
 
-        public AccountController(UserManager<ApplicationUser> userManager)
+        public AccountController(ApplicationUserManager userManager)
         {
             UserManager = userManager;
         }
 
-        public UserManager<ApplicationUser> UserManager { get; private set; }
+        private ApplicationUserManager _userManager;
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
 
         //
         // GET: /Account/Login
@@ -81,16 +95,30 @@ namespace Perseus.Controllers
                 var user = new ApplicationUser() { UserName = model.UserName };
                 user.Created = DateTime.Now;
                 user.LastLogin = null;
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                try{
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        await SignInAsync(user, isPersistent: false);
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        AddErrors(result);
+                    }
                 }
-                else
+                catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
                 {
-                    AddErrors(result);
+                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    {
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            System.Diagnostics.Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                        }
+                    }
                 }
+                
+                
             }
 
             // If we got this far, something failed, redisplay form

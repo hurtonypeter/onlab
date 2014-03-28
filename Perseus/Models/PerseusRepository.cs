@@ -18,21 +18,22 @@ namespace Perseus.Models
         public void Dispose()
         {
             db.Dispose();
+            
         }
         
-        public IQueryable<User> GetAllUser()
+        /*public IQueryable<Users> GetAllUser()
         {
-            return db.User;
+            return db.Users;
         }
 
-        public User GetUserById(string id)
+        public s GetUserById(string id)
         {
-            return db.User.SingleOrDefault(s => s.UserId.Equals(id));
+            return db.Users.SingleOrDefault(s => s.Id.Equals(id));
         }
 
         public void EditUser(EditAccountModel model)
         {
-            /*User user = GetUserById(model.UId);
+            User user = GetUserById(model.UId);
             user.UserName = model.UserName;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
@@ -46,7 +47,7 @@ namespace Perseus.Models
                 UserManager.PasswordHasher.HashPassword(model.Password);
             }
 
-            List<string> removeIndex = new List<string>();
+            /*List<string> removeIndex = new List<string>();
             for (int i = 0; i < user.Role.Count; i++)
             {
                 if (!(model.Roles.Contains(new RoleCheckBox(user.Role.ElementAt(i).Name, false))))
@@ -73,22 +74,22 @@ namespace Perseus.Models
                 }
             }
 
-            Save();*/
+            Save();
         }
 
-        public IQueryable<Role> GetAllRole()
+        public IQueryable<Roles> GetAllRole()
         {
-            return db.Role;
+            return db.Roles;
         }
-        public Role GetRoleById(string id)
+        public Roles GetRoleById(string id)
         {
-            return db.Role.SingleOrDefault(s => s.Id.Equals(id));
+            return db.Roles.SingleOrDefault(s => s.Id.Equals(id));
         }
-        public Role GetRoleByName(string name)
+        public Roles GetRoleByName(string name)
         {
-            return db.Role.SingleOrDefault(s => s.Name == name);
+            return db.Roles.SingleOrDefault(s => s.Name == name);
         }
-        public void CreateNewRole(Role model)
+        public void CreateNewRole(Roles model)
         {
             RoleManager<IdentityRole> rm = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
             rm.Create(new IdentityRole(model.Name));
@@ -97,13 +98,13 @@ namespace Perseus.Models
         }
 
 
-        public IQueryable<Permission> GetAllPermission()
+        public IQueryable<Permissions> GetAllPermission()
         {
-            return db.Permission;
+            return db.Permissions;
         }
         public IQueryable<Module> GetModules()
         {
             return db.Module;
-        }
+        }*/
     }
 }

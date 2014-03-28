@@ -13,7 +13,7 @@ namespace Perseus.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201403260036298_init"; }
+            get { return "201403280122340_init"; }
         }
         
         string IMigrationMetadata.Source

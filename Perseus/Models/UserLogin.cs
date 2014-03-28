@@ -12,13 +12,12 @@ namespace Perseus.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class UserRoles
+    public partial class UserLogin
     {
+        public string LoginProvider { get; set; }
+        public string ProviderKey { get; set; }
         public string UserId { get; set; }
-        public string RoleId { get; set; }
-        public string IdentityUser_Id { get; set; }
     
-        public virtual Role Role { get; set; }
         public virtual User User { get; set; }
     }
 }

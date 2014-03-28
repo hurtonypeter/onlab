@@ -12,13 +12,18 @@ namespace Perseus.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class UserLogins
+    public partial class Permisson
     {
-        public string LoginProvider { get; set; }
-        public string ProviderKey { get; set; }
-        public string UserId { get; set; }
-        public string IdentityUser_Id { get; set; }
+        public Permisson()
+        {
+            this.Role = new HashSet<Role>();
+        }
     
-        public virtual User User { get; set; }
+        public string PermissionId { get; set; }
+        public string Name { get; set; }
+        public int ModuleId { get; set; }
+    
+        public virtual Module Module { get; set; }
+        public virtual ICollection<Role> Role { get; set; }
     }
 }
