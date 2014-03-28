@@ -12,7 +12,7 @@
           <Property Name="ModuleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ModuleName" Type="nvarchar(max)" />
         </EntityType>
-        <EntityType Name="Permisson">
+        <EntityType Name="Permission">
           <Key>
             <PropertyRef Name="PermissionId" />
           </Key>
@@ -88,23 +88,23 @@
           <End Role="Module" Type="Self.Module" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="Permisson" Type="Self.Permisson" Multiplicity="*" />
+          <End Role="Permission" Type="Self.Permission" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Module">
               <PropertyRef Name="ModuleId" />
             </Principal>
-            <Dependent Role="Permisson">
+            <Dependent Role="Permission">
               <PropertyRef Name="ModuleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_dbo_RolePermission_dbo_Permisson_ApplicationPermission_PermissionId">
-          <End Role="Permisson" Type="Self.Permisson" Multiplicity="1">
+          <End Role="Permission" Type="Self.Permission" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Role="RolePermission" Type="Self.RolePermission" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Permisson">
+            <Principal Role="Permission">
               <PropertyRef Name="PermissionId" />
             </Principal>
             <Dependent Role="RolePermission">
@@ -184,7 +184,7 @@
         </Association>
         <EntityContainer Name="ModelStoreContainer">
           <EntitySet Name="Module" EntityType="Self.Module" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Permisson" EntityType="Self.Permisson" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RolePermission" EntityType="Self.RolePermission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
@@ -193,10 +193,10 @@
           <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_Permisson_dbo_Module_ModuleId" Association="Self.FK_dbo_Permisson_dbo_Module_ModuleId">
             <End Role="Module" EntitySet="Module" />
-            <End Role="Permisson" EntitySet="Permisson" />
+            <End Role="Permission" EntitySet="Permission" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_RolePermission_dbo_Permisson_ApplicationPermission_PermissionId" Association="Self.FK_dbo_RolePermission_dbo_Permisson_ApplicationPermission_PermissionId">
-            <End Role="Permisson" EntitySet="Permisson" />
+            <End Role="Permission" EntitySet="Permission" />
             <End Role="RolePermission" EntitySet="RolePermission" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_RolePermission_dbo_Role_ApplicationRole_Id" Association="Self.FK_dbo_RolePermission_dbo_Role_ApplicationRole_Id">
@@ -226,14 +226,14 @@
       <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Module" EntityType="Model.Module" />
-          <EntitySet Name="Permisson" EntityType="Model.Permisson" />
+          <EntitySet Name="Permission" EntityType="Model.Permission" />
           <EntitySet Name="Role" EntityType="Model.Role" />
           <EntitySet Name="User" EntityType="Model.User" />
           <EntitySet Name="UserClaim" EntityType="Model.UserClaim" />
           <EntitySet Name="UserLogin" EntityType="Model.UserLogin" />
           <AssociationSet Name="FK_dbo_Permisson_dbo_Module_ModuleId" Association="Model.FK_dbo_Permisson_dbo_Module_ModuleId">
             <End Role="Module" EntitySet="Module" />
-            <End Role="Permisson" EntitySet="Permisson" />
+            <End Role="Permission" EntitySet="Permission" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_UserClaim_dbo_User_UserId" Association="Model.FK_dbo_UserClaim_dbo_User_UserId">
             <End Role="User" EntitySet="User" />
@@ -244,7 +244,7 @@
             <End Role="UserLogin" EntitySet="UserLogin" />
           </AssociationSet>
           <AssociationSet Name="RolePermission" Association="Model.RolePermission">
-            <End Role="Permisson" EntitySet="Permisson" />
+            <End Role="Permission" EntitySet="Permission" />
             <End Role="Role" EntitySet="Role" />
           </AssociationSet>
           <AssociationSet Name="UserRole" Association="Model.UserRole">
@@ -258,17 +258,17 @@
           </Key>
           <Property Name="ModuleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModuleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Permisson" Relationship="Model.FK_dbo_Permisson_dbo_Module_ModuleId" FromRole="Module" ToRole="Permisson" />
+          <NavigationProperty Name="Permission" Relationship="Model.FK_dbo_Permisson_dbo_Module_ModuleId" FromRole="Module" ToRole="Permission" />
         </EntityType>
-        <EntityType Name="Permisson">
+        <EntityType Name="Permission">
           <Key>
             <PropertyRef Name="PermissionId" />
           </Key>
           <Property Name="PermissionId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ModuleId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Module" Relationship="Model.FK_dbo_Permisson_dbo_Module_ModuleId" FromRole="Permisson" ToRole="Module" />
-          <NavigationProperty Name="Role" Relationship="Model.RolePermission" FromRole="Permisson" ToRole="Role" />
+          <NavigationProperty Name="Module" Relationship="Model.FK_dbo_Permisson_dbo_Module_ModuleId" FromRole="Permission" ToRole="Module" />
+          <NavigationProperty Name="Role" Relationship="Model.RolePermission" FromRole="Permission" ToRole="Role" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -276,7 +276,7 @@
           </Key>
           <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Permisson" Relationship="Model.RolePermission" FromRole="Role" ToRole="Permisson" />
+          <NavigationProperty Name="Permission" Relationship="Model.RolePermission" FromRole="Role" ToRole="Permission" />
           <NavigationProperty Name="User" Relationship="Model.UserRole" FromRole="Role" ToRole="User" />
         </EntityType>
         <EntityType Name="User">
@@ -329,12 +329,12 @@
           <End Type="Model.Module" Role="Module" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="Model.Permisson" Role="Permisson" Multiplicity="*" />
+          <End Type="Model.Permission" Role="Permission" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Module">
               <PropertyRef Name="ModuleId" />
             </Principal>
-            <Dependent Role="Permisson">
+            <Dependent Role="Permission">
               <PropertyRef Name="ModuleId" />
             </Dependent>
           </ReferentialConstraint>
@@ -368,7 +368,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="RolePermission">
-          <End Type="Model.Permisson" Role="Permisson" Multiplicity="*" />
+          <End Type="Model.Permission" Role="Permission" Multiplicity="*" />
           <End Type="Model.Role" Role="Role" Multiplicity="*" />
         </Association>
         <Association Name="UserRole">
@@ -389,9 +389,9 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Permisson">
-            <EntityTypeMapping TypeName="Model.Permisson">
-              <MappingFragment StoreEntitySet="Permisson">
+          <EntitySetMapping Name="Permission">
+            <EntityTypeMapping TypeName="Model.Permission">
+              <MappingFragment StoreEntitySet="Permission">
                 <ScalarProperty Name="ModuleId" ColumnName="ModuleId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
@@ -452,7 +452,7 @@
             <EndProperty Name="Role">
               <ScalarProperty Name="Id" ColumnName="ApplicationRole_Id" />
             </EndProperty>
-            <EndProperty Name="Permisson">
+            <EndProperty Name="Permission">
               <ScalarProperty Name="PermissionId" ColumnName="ApplicationPermission_PermissionId" />
             </EndProperty>
           </AssociationSetMapping>

@@ -20,12 +20,12 @@ namespace Perseus.Models
 
     public class PermissionsTableModel
     {
-        //public List<Role> Roles { get; set; }
+        public List<Role> Roles { get; set; }
         public List<ModuleRoles> Modules { get; set; }
 
         public PermissionsTableModel()
         {
-            //Roles = new List<Role>();
+            Roles = new List<Role>();
             Modules = new List<ModuleRoles>();
         }
     }

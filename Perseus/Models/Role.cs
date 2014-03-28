@@ -16,14 +16,14 @@ namespace Perseus.Models
     {
         public Role()
         {
-            this.Permisson = new HashSet<Permisson>();
+            this.Permission = new HashSet<Permission>();
             this.User = new HashSet<User>();
         }
     
         public string Id { get; set; }
         public string Name { get; set; }
     
-        public virtual ICollection<Permisson> Permisson { get; set; }
+        public virtual ICollection<Permission> Permission { get; set; }
         public virtual ICollection<User> User { get; set; }
     }
 }

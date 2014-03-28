@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Owin;
+using Perseus.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,14 +25,14 @@ namespace Perseus.Models
             
         }
         
-        /*public IQueryable<Users> GetAllUser()
+        public IQueryable<User> GetAllUser()
         {
-            return db.Users;
+            return db.User;
         }
 
-        public s GetUserById(string id)
+        public User GetUserById(string id)
         {
-            return db.Users.SingleOrDefault(s => s.Id.Equals(id));
+            return db.User.SingleOrDefault(s => s.UserId.Equals(id));
         }
 
         public void EditUser(EditAccountModel model)
@@ -40,14 +44,14 @@ namespace Perseus.Models
             user.Email = model.Email;
             user.Status = model.Status;
 
-            UserManager<ApplicationUser> UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+            ApplicationUserManager UserManager = new ApplicationUserManager(new ApplicationUserStore(new ApplicationDbContext()));
 
             if (model.Password != null)
             {
                 UserManager.PasswordHasher.HashPassword(model.Password);
             }
 
-            /*List<string> removeIndex = new List<string>();
+            List<string> removeIndex = new List<string>();
             for (int i = 0; i < user.Role.Count; i++)
             {
                 if (!(model.Roles.Contains(new RoleCheckBox(user.Role.ElementAt(i).Name, false))))
@@ -77,34 +81,36 @@ namespace Perseus.Models
             Save();
         }
 
-        public IQueryable<Roles> GetAllRole()
+        public IQueryable<Role> GetAllRole()
         {
-            return db.Roles;
+            return db.Role;
         }
-        public Roles GetRoleById(string id)
+        public Role GetRoleById(string id)
         {
-            return db.Roles.SingleOrDefault(s => s.Id.Equals(id));
+            return db.Role.SingleOrDefault(s => s.Id.Equals(id));
         }
-        public Roles GetRoleByName(string name)
+        public Role GetRoleByName(string name)
         {
-            return db.Roles.SingleOrDefault(s => s.Name == name);
+            return db.Role.SingleOrDefault(s => s.Name == name);
         }
-        public void CreateNewRole(Roles model)
+        public void CreateNewRole(Role model)
         {
-            RoleManager<IdentityRole> rm = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
-            rm.Create(new IdentityRole(model.Name));
-            //db.Role.Add(model);
-            //Save();
+            
+            ApplicationRoleManager rm = new ApplicationRoleManager(new ApplicationRoleStore(new ApplicationDbContext()));
+            rm.Create(new ApplicationRole(model.Name)
+            { 
+                Id = Guid.NewGuid().ToString()
+            });
         }
 
 
-        public IQueryable<Permissions> GetAllPermission()
+        public IQueryable<Permission> GetAllPermission()
         {
-            return db.Permissions;
+            return db.Permission;
         }
         public IQueryable<Module> GetModules()
         {
             return db.Module;
-        }*/
+        }
     }
 }

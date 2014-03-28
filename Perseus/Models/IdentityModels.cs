@@ -137,7 +137,7 @@ namespace Perseus.Models
 
             modelBuilder.Entity<ApplicationRole>().ToTable("Role");
 
-            modelBuilder.Entity<ApplicationPermission>().ToTable("Permisson")
+            modelBuilder.Entity<ApplicationPermission>().ToTable("Permission")
                 .HasMany(e => e.Roles)
                 .WithMany(e => e.Permissions)
                 .Map(m => m.ToTable("RolePermission").MapLeftKey("ApplicationPermission_PermissionId").MapRightKey("ApplicationRole_Id"));
@@ -344,6 +344,13 @@ namespace Perseus.Models
         public ApplicationRoleStore(ApplicationDbContext context)
             : base(context)
         {
+        }
+    }
+    public class ApplicationRoleManager : RoleManager<ApplicationRole, string>
+    {
+        public ApplicationRoleManager(IRoleStore<ApplicationRole, string> store) : base (store)
+        {
+
         }
     }
     public class ApplicationUserManager : UserManager<ApplicationUser, string>

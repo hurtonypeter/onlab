@@ -12,9 +12,9 @@ namespace Perseus.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Permisson
+    public partial class Permission
     {
-        public Permisson()
+        public Permission()
         {
             this.Role = new HashSet<Role>();
         }

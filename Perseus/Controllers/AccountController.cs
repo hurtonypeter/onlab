@@ -92,7 +92,10 @@ namespace Perseus.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser() { UserName = model.UserName };
+                var user = new ApplicationUser() { 
+                    UserName = model.UserName,
+                    Id = Guid.NewGuid().ToString()
+                };
                 user.Created = DateTime.Now;
                 user.LastLogin = null;
                 try{
