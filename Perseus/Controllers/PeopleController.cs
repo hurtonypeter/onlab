@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Threading.Tasks;
 using Perseus.Helpers;
+using Postal;
 
 namespace Perseus.Controllers
 {
@@ -50,6 +51,7 @@ namespace Perseus.Controllers
                 var result = um.Create(user, pass);
                 if(result.Succeeded)
                 {
+                    MailHelper.SendPassword();
                     return RedirectToAction("Index", "People");
                 }
                 else
