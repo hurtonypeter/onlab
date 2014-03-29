@@ -13,10 +13,12 @@ namespace Perseus.Helpers
     public class MailHelper
     {
 
-        public static void SendPassword()
+        public static void WelcomeSendPassword(string username, string toaddress, string pass)
         {
             dynamic email = new Email("~/MailTemplates/Teszt.cshtml");
-            email.To = "hurtonypeter@gmail.com";
+            email.To = toaddress;
+            email.UserName = username;
+            email.Password = pass;
             email.Send();
         }
 

@@ -59,7 +59,7 @@
         <p>&nbsp;</p>
         <p>
             @Html.ActionLink("Cancel", "Index", "People", null, new { @class = "btn btn-default" })
-            <a href="javascript:;" class="btn btn-danger deletebutton"><i class="icon-trash"></i> Delete User</a>
+            <a data-toggle="modal" data-target=".delete-user-modal" class="btn btn-danger deletebutton"><i class="icon-trash"></i> Delete User</a>
             <button type="submit" class="btn btn-success"><i class="icon-ok"></i> Save</button>
         </p>
     </div>
@@ -87,3 +87,25 @@
     </div>
 }
 </div>
+
+@section modals{
+
+    <div class="modal fade delete-user-modal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModal" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Felhasználó törlése</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Biztosan törölni szeretnéd a @Model.UserName nevű felhasználót?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Mégse</button>
+                    @Html.ActionLink("Törlés", "DeleteUser", "People", new { id = Model.UId }, new { @class = "btn btn-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

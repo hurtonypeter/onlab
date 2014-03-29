@@ -43,7 +43,6 @@ namespace Perseus.Controllers
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = model.UserName,
-                    //PasswordHash = um.PasswordHasher.HashPassword(StringHelper.RandomString(8, 10)),
                     Email = model.Email,
                     Created = DateTime.Now,
                     LastLogin = null
@@ -51,7 +50,7 @@ namespace Perseus.Controllers
                 var result = um.Create(user, pass);
                 if(result.Succeeded)
                 {
-                    MailHelper.SendPassword();
+                    MailHelper.WelcomeSendPassword(user.UserName, user.Email, pass);
                     return RedirectToAction("Index", "People");
                 }
                 else
@@ -61,15 +60,6 @@ namespace Perseus.Controllers
                         ModelState.AddModelError("", error);
                     }
                 }
-                //try
-                //{
-                //    db.CreateNewUser(model);
-                //    return RedirectToAction("Index", "People");
-                //}
-                //catch (Exception e)
-                //{
-                //    ModelState.AddModelError("", e.ToString());
-                //}
             }
 
             return View(model);

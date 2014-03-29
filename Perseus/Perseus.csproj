@@ -325,8 +325,7 @@
     <Content Include="Views\People\AddRole.cshtml" />
     <Content Include="Views\People\EditRole.cshtml" />
     <Content Include="Views\People\CreateAccount.cshtml" />
-    <Content Include="Views\Emails\Web.config" />
-    <Content Include="Views\Emails\_ViewStart.cshtml" />
+    <Content Include="MailTemplates\_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
