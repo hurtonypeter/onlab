@@ -19,7 +19,30 @@
     </div>
 
     <p>
-        @Html.ActionLink("Cancel", "Roles", "People", null, new { @class = "btn btn-default" })
-        <input type="submit" value="Save" class="btn btn-success" />
+        @Html.ActionLink("Mégsem", "Roles", "People", null, new { @class = "btn btn-default" })
+        <input type="submit" value="Mentés" class="btn btn-success" />
+        <a class="btn btn-danger" data-toggle="modal" data-target=".delete-role-modal">Szerepkör törlése</a> 
     </p>
+}
+
+@section modals{
+
+    <div class="modal fade delete-role-modal" tabindex="-1" role="dialog" aria-labelledby="deleteRoleModal" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Szerepkör törlése</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Biztosan törölni szeretnéd a @Model.Name szerepkört?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Mégse</button>
+                    @Html.ActionLink("Törlés", "DeleteRole", "People", new { id = Model.Id }, new { @class = "btn btn-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
 }

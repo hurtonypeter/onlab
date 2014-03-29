@@ -17,6 +17,7 @@
     <thead>
         <tr>
             <th>Felhasználónév</th>
+            <th>Teljes név</th>
             <th>E-mail</th>
             <th>Szerepkörök</th>
             <th>Regisztrált</th>
@@ -31,6 +32,9 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Email)
@@ -61,7 +65,7 @@
                     }
                     else
                     {
-                        <text><span class="label label-inverse">zárolt</span></text>
+                        <text><span class="label label-default">zárolt</span></text>
                     }
                 </td>
                 <td>
