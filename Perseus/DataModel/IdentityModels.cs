@@ -103,10 +103,43 @@ namespace Perseus.DataModel
         }
     }
 
+    public class ApplicationMenu
+    {
+        [Key]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public virtual ICollection<ApplicationMenuItem> MenuLinks { get; set; }
+        public ApplicationMenu()
+        {
+            MenuLinks = new HashSet<ApplicationMenuItem>();
+        }
+
+    }
+    public class ApplicationMenuItem
+    {
+        [Key]
+        public int Id { get; set; }
+        public int MenuId { get; set; }
+        public ApplicationMenu Menu { get; set; }
+        public int ParentId { get; set; }
+        public ApplicationMenuItem Parent { get; set; }
+        public ICollection<ApplicationMenuItem> Children { get; set; }
+        public string LinkPath { get; set; }
+        public string LinkTitle { get; set; }
+        public ApplicationPermission Permission { get; set; }
+        public ApplicationMenuItem()
+        {
+            Children = new HashSet<ApplicationMenuItem>();
+        }
+    }
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {
         public virtual IDbSet<ApplicationModule> Modules { get; set; }
         public virtual IDbSet<ApplicationPermission> Permissions { get; set; }
+        public virtual IDbSet<ApplicationMenu> Menus { get; set; }
+        public virtual IDbSet<ApplicationMenuItem> MenuItems { get; set; }
         //new public virtual IDbSet<ApplicationRole> Roles { get; set; }
 
         //new public IDbSet<ApplicationUserRole> UserRole { get; set; }
@@ -146,6 +179,17 @@ namespace Perseus.DataModel
 
             modelBuilder.Entity<ApplicationUserClaim>().ToTable("UserClaim");
             modelBuilder.Entity<ApplicationUserLogin>().ToTable("UserLogin");
+
+            modelBuilder.Entity<ApplicationMenu>().ToTable("Menu")
+                .HasMany(e => e.MenuLinks)
+                .WithRequired(e => e.Menu)
+                .HasForeignKey(e => e.MenuId)
+                .WillCascadeOnDelete(true);
+            modelBuilder.Entity<ApplicationMenuItem>().ToTable("MenuItem")
+                .HasMany(e => e.Children)
+                .WithRequired(e => e.Parent)
+                .HasForeignKey(e => e.ParentId)
+                .WillCascadeOnDelete(false);
         
         }
         //protected override void OnModelCreating(DbModelBuilder modelBuilder)

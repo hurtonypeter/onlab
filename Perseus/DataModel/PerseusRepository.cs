@@ -14,19 +14,8 @@ using System.Web.Routing;
 
 namespace Perseus.DataModel
 {
-    public class PerseusRepository : IDisposable
+    public class PerseusRepository : Repository
     {
-        protected Entities db = new Entities();
-
-        public void Save()
-        {
-            db.SaveChanges();
-        }
-        public void Dispose()
-        {
-            db.Dispose();
-            
-        }
         
         public IQueryable<User> GetAllUser()
         {
@@ -37,21 +26,6 @@ namespace Perseus.DataModel
         {
             return db.User.SingleOrDefault(s => s.UserId.Equals(id));
         }
-
-        //public void CreateNewUser(NewUserModel model)
-        //{
-        //    ApplicationUserManager um = new ApplicationUserManager(new ApplicationUserStore(new ApplicationDbContext()));
-        //    var user = new ApplicationUser()
-        //    {
-        //        Id = Guid.NewGuid().ToString(),
-        //        UserName = model.UserName,
-        //        //PasswordHash = um.PasswordHasher.HashPassword(StringHelper.RandomString(8, 10)),
-        //        Email = model.Email,
-        //        Created = DateTime.Now,
-        //        LastLogin = null
-        //    };
-        //    um.Create(user, um.PasswordHasher.HashPassword(StringHelper.RandomString(8, 10)));
-        //}
 
         public void EditUser(EditAccountModel model)
         {
