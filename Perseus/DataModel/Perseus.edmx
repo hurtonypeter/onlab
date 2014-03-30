@@ -182,6 +182,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="GetCurrentPermissions" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserId" Type="nvarchar" Mode="In" />
+        </Function>
         <EntityContainer Name="ModelStoreContainer">
           <EntitySet Name="Module" EntityType="Self.Module" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
@@ -251,6 +254,9 @@
             <End Role="Role" EntitySet="Role" />
             <End Role="User" EntitySet="User" />
           </AssociationSet>
+          <FunctionImport Name="GetCurrentPermissions" ReturnType="Collection(String)">
+            <Parameter Name="UserId" Mode="In" Type="String" />
+          </FunctionImport>
           </EntityContainer>
         <EntityType Name="Module">
           <Key>
@@ -464,6 +470,7 @@
               <ScalarProperty Name="Id" ColumnName="RoleId" />
             </EndProperty>
           </AssociationSetMapping>
+          <FunctionImportMapping FunctionImportName="GetCurrentPermissions" FunctionName="Model.Store.GetCurrentPermissions" />
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

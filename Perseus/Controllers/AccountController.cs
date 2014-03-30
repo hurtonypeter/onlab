@@ -95,10 +95,10 @@ namespace Perseus.Controllers
             {
                 var user = new ApplicationUser() { 
                     UserName = model.UserName,
-                    Id = Guid.NewGuid().ToString()
+                    Id = Guid.NewGuid().ToString(),
+                    Created = DateTime.Now,
+                    LastLogin = null
                 };
-                user.Created = DateTime.Now;
-                user.LastLogin = null;
                 
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Perseus.DataModel;
 using Perseus.Models;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Perseus.Security
 {
     public class AccountHelper
     {
-        /*public const string SUPERUSER = "admin";
+        //public const string SUPERUSER = "admin";
 
         public static User CurrentUser()
         {
@@ -18,11 +19,11 @@ namespace Perseus.Security
             {
                 using (Entities db = new Entities())
                 {
-                    var uid = IdentityExtensions.GetUserId(HttpContext.Current.User.Identity);
+                    var uid = HttpContext.Current.User.Identity.GetUserId();
                     var user = db.User.SingleOrDefault(u => u.UserId.Equals(uid));
 
                     //ha authenticated(van sütije), de ez mégis null-t ad vissza, akkor vmi turpisság van a dologban!!
-                    if(user == null)
+                    if (user == null)
                     {
                         throw new UnauthorizedAccessException();
                     }
@@ -47,23 +48,25 @@ namespace Perseus.Security
             {
                 if (IsAuthenticated())
                 {
-                    return new List<string>();
+                    // ha bejelentkezett felhasnzálóval van dolgunk, kérdezzük le a jogait
+                    return db.GetCurrentPermissions(HttpContext.Current.User.Identity.GetUserId()).ToList();
                 }
                 else
                 {
-                    return new List<string>();
+                    // ha nincs bejelentkezve, akkor az anonymous jogokat kérdezzük le
+                    return db.Role.SingleOrDefault(r => r.Name.ToLower().Equals("anonymous")).Permission.Select(p => p.Name).ToList();
                 }
-
+                
             }
         }
 
         public static bool HasPermission(string perm)
         {
-            if (IsAuthenticated() && CurrentUser().UserName == SUPERUSER)
-                return true;
+            // TODO: superusert beépíteni
+            //if (IsAuthenticated() && CurrentUser().UserName == SUPERUSER)
+            //    return true;
 
-            List<string> current = CurrentPermissions();
-            return current.Contains(perm);
-        }*/
+            return CurrentPermissions().Contains(perm, StringComparer.OrdinalIgnoreCase);
+        }
     }
 }

@@ -251,6 +251,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AccountHelper.cs" />
+    <Compile Include="Security\PerseusAuth.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
