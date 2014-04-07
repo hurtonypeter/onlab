@@ -37,10 +37,10 @@
                     <td colspan="@colspan">
                         <b>
                             @Html.DisplayFor(m => Model.Modules[i].ModuleName, new { name = "Modules[" + i + "].ModuleName" })
-                        @Html.HiddenFor(m => Model.Modules[i].ModuleName, new { name = "Modules[" + i + "].ModuleName" })
-                    </b>
-                </td>
-            </tr>
+                            @Html.HiddenFor(m => Model.Modules[i].ModuleName, new { name = "Modules[" + i + "].ModuleName" })
+                        </b>
+                    </td>
+                </tr>
 
                 for (int j = 0; j < Model.Modules[i].AccessLevels.Count; j++)
                 {
@@ -57,13 +57,13 @@
                         {
                             <td>
                                 @Html.CheckBoxFor(b => Model.Modules[i].AccessLevels[j].Boxes[k],
-                                                          new { name = "Modules[" + i + "].AccessLevels[" + j + "].Boxes[" + k + "]", @class = "colid_" + c + " " + Model.Roles[k].Name, colid = c })
+                                                          new { name = "Modules[" + i + "].AccessLevels[" + j + "].Boxes[" + k + "]", @class = "colid_" + c + " " + Model.Roles[k].Name, colid = c, data_colid = c })
                                 @Html.HiddenFor(b => Model.Modules[i].AccessLevels[j].Boxes[k],
                                                         new { name = "Modules[" + i + "].AccessLevels[" + j + "].Boxes[" + k + "]" })
                             </td>
                         }
                     </tr>
-                        c++;
+                    c++;
                 }
             }
         </tbody>
@@ -71,4 +71,8 @@
     <div style="text-align:right;">
         <button type="submit" class="btn btn-success">Mentés</button>
     </div>
+}
+
+@section scripts{
+    @Scripts.Render("~/Scripts/Perseus.PermissionsPage.js")
 }
