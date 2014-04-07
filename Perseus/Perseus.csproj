@@ -188,6 +188,12 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\PeopleController.cs" />
+    <Compile Include="DataModel\Menu.cs">
+      <DependentUpon>Perseus.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataModel\MenuItem.cs">
+      <DependentUpon>Perseus.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataModel\PerseusPartial.cs" />
     <Compile Include="DataModel\Repository.cs" />
     <Compile Include="Global.asax.cs">
@@ -199,17 +205,9 @@
     <Compile Include="Migrations\201403281523511_init.Designer.cs">
       <DependentUpon>201403281523511_init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201403291900260_init1.cs" />
-    <Compile Include="Migrations\201403291900260_init1.Designer.cs">
-      <DependentUpon>201403291900260_init1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201403291912034_init2.cs" />
-    <Compile Include="Migrations\201403291912034_init2.Designer.cs">
-      <DependentUpon>201403291912034_init2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201403291937303_init3.cs" />
-    <Compile Include="Migrations\201403291937303_init3.Designer.cs">
-      <DependentUpon>201403291937303_init3.cs</DependentUpon>
+    <Compile Include="Migrations\201404061614293_init1.cs" />
+    <Compile Include="Migrations\201404061614293_init1.Designer.cs">
+      <DependentUpon>201404061614293_init1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
@@ -357,14 +355,8 @@
     <EmbeddedResource Include="Migrations\201403281523511_init.resx">
       <DependentUpon>201403281523511_init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201403291900260_init1.resx">
-      <DependentUpon>201403291900260_init1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201403291912034_init2.resx">
-      <DependentUpon>201403291912034_init2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201403291937303_init3.resx">
-      <DependentUpon>201403291937303_init3.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201404061614293_init1.resx">
+      <DependentUpon>201404061614293_init1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

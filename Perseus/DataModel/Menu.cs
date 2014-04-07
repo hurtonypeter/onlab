@@ -12,20 +12,17 @@ namespace Perseus.DataModel
     using System;
     using System.Collections.Generic;
     
-    public partial class Permission
+    public partial class Menu
     {
-        public Permission()
+        public Menu()
         {
-            this.Role = new HashSet<Role>();
             this.MenuItem = new HashSet<MenuItem>();
         }
     
-        public int PermissionId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
-        public int ModuleId { get; set; }
+        public string Description { get; set; }
     
-        public virtual Module Module { get; set; }
-        public virtual ICollection<Role> Role { get; set; }
         public virtual ICollection<MenuItem> MenuItem { get; set; }
     }
 }

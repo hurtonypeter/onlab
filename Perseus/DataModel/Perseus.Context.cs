@@ -33,6 +33,8 @@ namespace Perseus.DataModel
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserClaim> UserClaim { get; set; }
         public virtual DbSet<UserLogin> UserLogin { get; set; }
+        public virtual DbSet<Menu> Menu { get; set; }
+        public virtual DbSet<MenuItem> MenuItem { get; set; }
     
         public virtual ObjectResult<string> GetCurrentPermissions(string userId)
         {

@@ -8,26 +8,26 @@ namespace Perseus.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.ApplicationMenuItems",
+                "dbo.MenuItem",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        MenuId = c.Int(nullable: false),
+                        ParentId = c.Int(),
                         LinkPath = c.String(),
                         LinkTitle = c.String(),
-                        ApplicationMenuItem_Id = c.Int(),
-                        Menu_Id = c.Int(),
                         Permission_PermissionId = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.ApplicationMenuItems", t => t.ApplicationMenuItem_Id)
-                .ForeignKey("dbo.ApplicationMenus", t => t.Menu_Id)
+                .ForeignKey("dbo.MenuItem", t => t.ParentId)
+                .ForeignKey("dbo.Menu", t => t.MenuId, cascadeDelete: true)
                 .ForeignKey("dbo.Permission", t => t.Permission_PermissionId)
-                .Index(t => t.ApplicationMenuItem_Id)
-                .Index(t => t.Menu_Id)
+                .Index(t => t.MenuId)
+                .Index(t => t.ParentId)
                 .Index(t => t.Permission_PermissionId);
             
             CreateTable(
-                "dbo.ApplicationMenus",
+                "dbo.Menu",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -40,14 +40,14 @@ namespace Perseus.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.ApplicationMenuItems", "Permission_PermissionId", "dbo.Permission");
-            DropForeignKey("dbo.ApplicationMenuItems", "Menu_Id", "dbo.ApplicationMenus");
-            DropForeignKey("dbo.ApplicationMenuItems", "ApplicationMenuItem_Id", "dbo.ApplicationMenuItems");
-            DropIndex("dbo.ApplicationMenuItems", new[] { "Permission_PermissionId" });
-            DropIndex("dbo.ApplicationMenuItems", new[] { "Menu_Id" });
-            DropIndex("dbo.ApplicationMenuItems", new[] { "ApplicationMenuItem_Id" });
-            DropTable("dbo.ApplicationMenus");
-            DropTable("dbo.ApplicationMenuItems");
+            DropForeignKey("dbo.MenuItem", "Permission_PermissionId", "dbo.Permission");
+            DropForeignKey("dbo.MenuItem", "MenuId", "dbo.Menu");
+            DropForeignKey("dbo.MenuItem", "ParentId", "dbo.MenuItem");
+            DropIndex("dbo.MenuItem", new[] { "Permission_PermissionId" });
+            DropIndex("dbo.MenuItem", new[] { "ParentId" });
+            DropIndex("dbo.MenuItem", new[] { "MenuId" });
+            DropTable("dbo.Menu");
+            DropTable("dbo.MenuItem");
         }
     }
 }

@@ -121,13 +121,13 @@ namespace Perseus.DataModel
         [Key]
         public int Id { get; set; }
         public int MenuId { get; set; }
-        public ApplicationMenu Menu { get; set; }
-        public int ParentId { get; set; }
-        public ApplicationMenuItem Parent { get; set; }
-        public ICollection<ApplicationMenuItem> Children { get; set; }
+        public virtual ApplicationMenu Menu { get; set; }
+        public int? ParentId { get; set; }
+        public virtual ApplicationMenuItem Parent { get; set; }
+        public virtual ICollection<ApplicationMenuItem> Children { get; set; }
         public string LinkPath { get; set; }
         public string LinkTitle { get; set; }
-        public ApplicationPermission Permission { get; set; }
+        public virtual ApplicationPermission Permission { get; set; }
         public ApplicationMenuItem()
         {
             Children = new HashSet<ApplicationMenuItem>();
@@ -187,9 +187,8 @@ namespace Perseus.DataModel
                 .WillCascadeOnDelete(true);
             modelBuilder.Entity<ApplicationMenuItem>().ToTable("MenuItem")
                 .HasMany(e => e.Children)
-                .WithRequired(e => e.Parent)
-                .HasForeignKey(e => e.ParentId)
-                .WillCascadeOnDelete(false);
+                .WithOptional(e => e.Parent)
+                .HasForeignKey(e => e.ParentId);
         
         }
         //protected override void OnModelCreating(DbModelBuilder modelBuilder)
