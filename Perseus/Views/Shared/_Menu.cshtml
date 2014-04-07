@@ -1,0 +1,33 @@
+﻿@model List<Perseus.Models.MenuViewModel>
+
+<ul class="nav navbar-nav">
+    @foreach (Perseus.Models.MenuViewModel item in Model)
+    {
+        if (item.Children != null)
+        {
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">@item.Title <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    @foreach (Perseus.Models.MenuViewModel child in item.Children)
+                    {
+                        <li><a href="@child.Path">@child.Title</a></li>
+                    }
+                </ul>
+            </li>
+        }
+        else
+        {
+            <li><a href="@item.Path">@item.Title</a></li>
+        }
+    }
+    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+    <li>@Html.ActionLink("About", "About", "Home")</li>
+    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+</ul>
+
+
+
+
+
+
+
