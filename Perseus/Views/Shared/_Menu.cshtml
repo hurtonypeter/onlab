@@ -1,4 +1,5 @@
 ﻿@model List<Perseus.Models.MenuViewModel>
+@using Perseus.Helpers
 
 <ul class="nav navbar-nav">
     @foreach (Perseus.Models.MenuViewModel item in Model)
@@ -10,7 +11,7 @@
                 <ul class="dropdown-menu">
                     @foreach (Perseus.Models.MenuViewModel child in item.Children)
                     {
-                        <li><a href="@child.Path">@child.Title</a></li>
+                        <li class="@child.Classes"><a href="@child.Path">@child.Title</a></li>
                     }
                 </ul>
             </li>

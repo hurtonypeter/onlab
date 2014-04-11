@@ -5,23 +5,27 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="64c40f6d6c864c9eb24aef15832ba71f" Name="Diagram1" ZoomLevel="92" DisplayType="true">
-        <EntityTypeShape EntityType="DataModel.Module" Width="1.5" PointX="0.75" PointY="2.75" />
-        <EntityTypeShape EntityType="DataModel.Permission" Width="1.75" PointX="2.875" PointY="2.5" />
-        <EntityTypeShape EntityType="DataModel.Role" Width="1.5" PointX="5.5" PointY="2.125" />
-        <EntityTypeShape EntityType="DataModel.User" Width="1.5" PointX="7.5" PointY="1.125" />
-        <EntityTypeShape EntityType="DataModel.UserClaim" Width="1.5" PointX="9.75" PointY="1.25" />
-        <EntityTypeShape EntityType="DataModel.UserLogin" Width="1.5" PointX="9.75" PointY="4" />
+        <EntityTypeShape EntityType="DataModel.Module" Width="1.5" PointX="0.75" PointY="2.25" />
+        <EntityTypeShape EntityType="DataModel.Permission" Width="1.5" PointX="3" PointY="1.875" />
+        <EntityTypeShape EntityType="DataModel.Role" Width="1.5" PointX="5.25" PointY="2.125" />
+        <EntityTypeShape EntityType="DataModel.User" Width="1.5" PointX="7.5" PointY="0.5" />
+        <EntityTypeShape EntityType="DataModel.UserClaim" Width="1.5" PointX="9.75" PointY="0.625" />
+        <EntityTypeShape EntityType="DataModel.UserLogin" Width="1.5" PointX="9.75" PointY="3.375" />
         <AssociationConnector Association="DataModel.FK_dbo_Permission_dbo_Module_ModuleId" />
         <AssociationConnector Association="DataModel.FK_dbo_UserClaim_dbo_User_UserId" />
         <AssociationConnector Association="DataModel.FK_dbo_UserLogin_dbo_User_UserId" />
         <AssociationConnector Association="DataModel.RolePermission" />
         <AssociationConnector Association="DataModel.UserRole" />
-        <EntityTypeShape EntityType="DataModel.Menu" Width="1.5" PointX="5.125" PointY="6.25" />
-        <EntityTypeShape EntityType="DataModel.MenuItem" Width="1.5" PointX="2.625" PointY="6" />
+        <EntityTypeShape EntityType="DataModel.Menu" Width="1.5" PointX="5.25" PointY="5.625" />
+        <EntityTypeShape EntityType="DataModel.MenuItem" Width="1.5" PointX="3" PointY="5.125" />
         <AssociationConnector Association="DataModel.FK_dbo_MenuItem_dbo_Menu_MenuId" />
         <AssociationConnector Association="DataModel.FK_dbo_MenuItem_dbo_MenuItem_ParentId" />
         <AssociationConnector Association="DataModel.FK_dbo_MenuItem_dbo_Permission_Permission_PermissionId" />
-      </Diagram>
+        <EntityTypeShape EntityType="DataModel.HKNewsItem" Width="1.5" PointX="9.75" PointY="6.75" />
+        <EntityTypeShape EntityType="DataModel.HKNewsPaper" Width="1.5" PointX="7.5" PointY="6.375" />
+        <AssociationConnector Association="DataModel.FK_HKNewsItem_To_HKNewsPaper" />
+        <AssociationConnector Association="DataModel.FK_HKNewsPaper_To_Users" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

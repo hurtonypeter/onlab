@@ -5,6 +5,29 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="HKNewsItem">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MailId" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar(max)" />
+          <Property Name="Body" Type="text" />
+          <Property Name="Link" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="HKNewsPaper">
+          <Key>
+            <PropertyRef Name="MailId" />
+          </Key>
+          <Property Name="MailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sender" Type="nvarchar" MaxLength="128" />
+          <Property Name="Sent" Type="datetime" />
+          <Property Name="Created" Type="datetime" />
+          <Property Name="RPublisher" Type="nvarchar(max)" />
+          <Property Name="REditor" Type="nvarchar(max)" />
+          <Property Name="Title" Type="text" />
+          <Property Name="IsDraft" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="Menu">
           <Key>
             <PropertyRef Name="Id" />
@@ -239,10 +262,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_HKNewsItem_To_HKNewsPaper">
+          <End Role="HKNewsPaper" Type="Self.HKNewsPaper" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HKNewsItem" Type="Self.HKNewsItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HKNewsPaper">
+              <PropertyRef Name="MailId" />
+            </Principal>
+            <Dependent Role="HKNewsItem">
+              <PropertyRef Name="MailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HKNewsPaper_To_Users">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="HKNewsPaper" Type="Self.HKNewsPaper" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="HKNewsPaper">
+              <PropertyRef Name="Sender" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="GetCurrentPermissions" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserId" Type="nvarchar" Mode="In" />
         </Function>
         <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="HKNewsItem" EntityType="Self.HKNewsItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HKNewsPaper" EntityType="Self.HKNewsPaper" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MenuItem" EntityType="Self.MenuItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Module" EntityType="Self.Module" Schema="dbo" store:Type="Tables" />
@@ -293,6 +344,14 @@
             <End Role="User" EntitySet="User" />
             <End Role="UserRole" EntitySet="UserRole" />
           </AssociationSet>
+          <AssociationSet Name="FK_HKNewsItem_To_HKNewsPaper" Association="Self.FK_HKNewsItem_To_HKNewsPaper">
+            <End Role="HKNewsPaper" EntitySet="HKNewsPaper" />
+            <End Role="HKNewsItem" EntitySet="HKNewsItem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HKNewsPaper_To_Users" Association="Self.FK_HKNewsPaper_To_Users">
+            <End Role="User" EntitySet="User" />
+            <End Role="HKNewsPaper" EntitySet="HKNewsPaper" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -341,6 +400,16 @@
           <AssociationSet Name="FK_dbo_MenuItem_dbo_Permission_Permission_PermissionId" Association="DataModel.FK_dbo_MenuItem_dbo_Permission_Permission_PermissionId">
             <End Role="Permission" EntitySet="Permission" />
             <End Role="MenuItem" EntitySet="MenuItem" />
+          </AssociationSet>
+          <EntitySet Name="HKNewsItem" EntityType="DataModel.HKNewsItem" />
+          <EntitySet Name="HKNewsPaper" EntityType="DataModel.HKNewsPaper" />
+          <AssociationSet Name="FK_HKNewsItem_To_HKNewsPaper" Association="DataModel.FK_HKNewsItem_To_HKNewsPaper">
+            <End Role="HKNewsPaper" EntitySet="HKNewsPaper" />
+            <End Role="HKNewsItem" EntitySet="HKNewsItem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HKNewsPaper_To_Users" Association="DataModel.FK_HKNewsPaper_To_Users">
+            <End Role="User" EntitySet="User" />
+            <End Role="HKNewsPaper" EntitySet="HKNewsPaper" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Module">
@@ -395,6 +464,7 @@
           <NavigationProperty Name="UserClaim" Relationship="DataModel.FK_dbo_UserClaim_dbo_User_UserId" FromRole="User" ToRole="UserClaim" />
           <NavigationProperty Name="UserLogin" Relationship="DataModel.FK_dbo_UserLogin_dbo_User_UserId" FromRole="User" ToRole="UserLogin" />
           <NavigationProperty Name="Role" Relationship="DataModel.UserRole" FromRole="User" ToRole="Role" />
+          <NavigationProperty Name="HKNewsPaper" Relationship="DataModel.FK_HKNewsPaper_To_Users" FromRole="User" ToRole="HKNewsPaper" />
         </EntityType>
         <EntityType Name="UserClaim">
           <Key>
@@ -529,6 +599,58 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="HKNewsItem">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MailId" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Body" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Link" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="HKNewsPaper" Relationship="DataModel.FK_HKNewsItem_To_HKNewsPaper" FromRole="HKNewsItem" ToRole="HKNewsPaper" />
+        </EntityType>
+        <EntityType Name="HKNewsPaper">
+          <Key>
+            <PropertyRef Name="MailId" />
+          </Key>
+          <Property Name="MailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sender" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Sent" Type="DateTime" Precision="3" />
+          <Property Name="Created" Type="DateTime" Precision="3" />
+          <Property Name="RPublisher" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="REditor" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IsDraft" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="HKNewsItem" Relationship="DataModel.FK_HKNewsItem_To_HKNewsPaper" FromRole="HKNewsPaper" ToRole="HKNewsItem" />
+          <NavigationProperty Name="User" Relationship="DataModel.FK_HKNewsPaper_To_Users" FromRole="HKNewsPaper" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_HKNewsItem_To_HKNewsPaper">
+          <End Type="DataModel.HKNewsPaper" Role="HKNewsPaper" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DataModel.HKNewsItem" Role="HKNewsItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HKNewsPaper">
+              <PropertyRef Name="MailId" />
+            </Principal>
+            <Dependent Role="HKNewsItem">
+              <PropertyRef Name="MailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HKNewsPaper_To_Users">
+          <End Type="DataModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="DataModel.HKNewsPaper" Role="HKNewsPaper" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="HKNewsPaper">
+              <PropertyRef Name="Sender" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -637,6 +759,31 @@
                 <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="MenuId" ColumnName="MenuId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HKNewsItem">
+            <EntityTypeMapping TypeName="DataModel.HKNewsItem">
+              <MappingFragment StoreEntitySet="HKNewsItem">
+                <ScalarProperty Name="Link" ColumnName="Link" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="MailId" ColumnName="MailId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HKNewsPaper">
+            <EntityTypeMapping TypeName="DataModel.HKNewsPaper">
+              <MappingFragment StoreEntitySet="HKNewsPaper">
+                <ScalarProperty Name="IsDraft" ColumnName="IsDraft" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="REditor" ColumnName="REditor" />
+                <ScalarProperty Name="RPublisher" ColumnName="RPublisher" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Sent" ColumnName="Sent" />
+                <ScalarProperty Name="Sender" ColumnName="Sender" />
+                <ScalarProperty Name="MailId" ColumnName="MailId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -19,6 +19,7 @@ namespace Perseus.DataModel
             this.UserClaim = new HashSet<UserClaim>();
             this.UserLogin = new HashSet<UserLogin>();
             this.Role = new HashSet<Role>();
+            this.HKNewsPaper = new HashSet<HKNewsPaper>();
         }
     
         public string UserId { get; set; }
@@ -42,5 +43,6 @@ namespace Perseus.DataModel
         public virtual ICollection<UserClaim> UserClaim { get; set; }
         public virtual ICollection<UserLogin> UserLogin { get; set; }
         public virtual ICollection<Role> Role { get; set; }
+        public virtual ICollection<HKNewsPaper> HKNewsPaper { get; set; }
     }
 }

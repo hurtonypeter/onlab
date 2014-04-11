@@ -190,6 +190,12 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\PeopleController.cs" />
+    <Compile Include="DataModel\HKNewsItem.cs">
+      <DependentUpon>Perseus.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataModel\HKNewsPaper.cs">
+      <DependentUpon>Perseus.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataModel\Menu.cs">
       <DependentUpon>Perseus.tt</DependentUpon>
     </Compile>
@@ -203,6 +209,7 @@
     </Compile>
     <Compile Include="Helpers\MailHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="Helpers\UriHelperExtensions.cs" />
     <Compile Include="Migrations\201403281523511_init.cs" />
     <Compile Include="Migrations\201403281523511_init.Designer.cs">
       <DependentUpon>201403281523511_init.cs</DependentUpon>

@@ -37,7 +37,8 @@ namespace Perseus.Controllers
                             menu.Children.Add(new MenuViewModel
                             {
                                 Path = child.LinkPath,
-                                Title = child.LinkTitle
+                                Title = child.LinkTitle,
+                                Classes = Request.Url.AbsoluteUri.Contains(child.LinkPath) ? "active" : ""
                             });
                         }
                     }
