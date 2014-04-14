@@ -209,7 +209,7 @@
     </Compile>
     <Compile Include="Helpers\MailHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
-    <Compile Include="Helpers\UriHelperExtensions.cs" />
+    <Compile Include="Helpers\RazorHelperExtensions.cs" />
     <Compile Include="Migrations\201403281523511_init.cs" />
     <Compile Include="Migrations\201403281523511_init.Designer.cs">
       <DependentUpon>201403281523511_init.cs</DependentUpon>

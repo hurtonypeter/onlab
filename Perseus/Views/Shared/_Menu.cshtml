@@ -11,7 +11,7 @@
                 <ul class="dropdown-menu">
                     @foreach (Perseus.Models.MenuViewModel child in item.Children)
                     {
-                        <li class="@child.Classes"><a href="@child.Path">@child.Title</a></li>
+                        <li class="@child.Classes"><a href="@Html.LinkFromRelative(child.Path)">@child.Title</a></li>
                     }
                 </ul>
             </li>
