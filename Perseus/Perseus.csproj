@@ -221,6 +221,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="DataModel\IdentityModels.cs" />
+    <Compile Include="Models\HKNewsModels.cs" />
     <Compile Include="Models\MappingHelper.cs" />
     <Compile Include="DataModel\Module.cs">
       <DependentUpon>Perseus.tt</DependentUpon>
@@ -355,7 +356,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Menu\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
