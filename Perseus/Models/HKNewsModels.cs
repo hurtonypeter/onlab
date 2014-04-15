@@ -1,6 +1,7 @@
 ﻿using Perseus.DataModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -8,10 +9,18 @@ namespace Perseus.Models
 {
     public class HKNewsPaperViewModel
     {
-        public int MailId { get; set; }
+        public int Id { get; set; }
+
+        [Display(Name="Szerkesztő")]
         public User User { get; set; }
+
+        [Display(Name = "Felelős kiadó")]
         public string RPublisher { get; set; }
+
+        [Display(Name = "Felelős szerkesztő")]
         public string REditor { get; set; }
+
+        [Display(Name = "Cím")]
         public string Title { get; set; }
         public List<HKNewsItemViewModel> NewsItems { get; set; }
 
@@ -24,7 +33,7 @@ namespace Perseus.Models
         {
             HKNewsPaper retVal = new HKNewsPaper
             {
-                MailId = this.MailId,
+                MailId = this.Id,
                 User = this.User,
                 RPublisher = this.RPublisher,
                 REditor = this.REditor,
@@ -34,7 +43,7 @@ namespace Perseus.Models
             {
                 retVal.HKNewsItem.Add(new HKNewsItem
                     {
-                        ItemId = item.ItemId,
+                        ItemId = item.Id,
                         Title = item.Title,
                         Link = item.Link,
                         Body = item.Body
@@ -47,7 +56,7 @@ namespace Perseus.Models
         {
             HKNewsPaperViewModel retVal = new HKNewsPaperViewModel
             {
-                MailId = p.MailId,
+                Id = p.MailId,
                 User = p.User,
                 RPublisher = p.RPublisher,
                 REditor = p.REditor,
@@ -57,7 +66,7 @@ namespace Perseus.Models
             {
                 retVal.NewsItems.Add(new HKNewsItemViewModel
                     {
-                        ItemId = item.ItemId,
+                        Id = item.ItemId,
                         Title = item.Title,
                         Link = item.Link,
                         Body = item.Body
@@ -69,7 +78,7 @@ namespace Perseus.Models
 
     public class HKNewsItemViewModel
     {
-        public int ItemId { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Link { get; set; }
         public string Body { get; set; }

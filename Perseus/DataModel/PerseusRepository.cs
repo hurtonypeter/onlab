@@ -140,5 +140,11 @@ namespace Perseus.DataModel
             db.Permission.SingleOrDefault(p => p.PermissionId == pid).Role.Remove(role);
             Save();
         }
+
+
+        public HKNewsPaper GetHKNewsPaperById(int id)
+        {
+            return db.HKNewsPaper.SingleOrDefault(p => p.MailId == id);
+        }
     }
 }
