@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using Perseus.Filters;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Perseus
@@ -8,6 +9,7 @@ namespace Perseus
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new RenderTimeFilter());
         }
     }
 }
