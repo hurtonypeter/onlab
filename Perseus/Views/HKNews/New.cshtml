@@ -1,59 +1,235 @@
 ﻿@model Perseus.Models.HKNewsPaperViewModel
 
 @{
-    ViewBag.Title = "New";
+    ViewBag.Title = "Új hírlevél összeállítása";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+
 }
 
-<h2>New</h2>
+<h2>@ViewBag.Title</h2>
+<form role="form">
+    <div class="form-group">
+        <label for="RPublisher">Felelős kiadó</label>
+        <input type="text" data-bind="value: paper.RPublisher" class="form-control" id="RPublisher" />
+    </div>
+    <div class="form-group">
+        <label for="REditor">Felelős szerkesztő</label>
+        <input type="text" data-bind="value: paper.REditor" class="form-control" id="REditor" />
+    </div>
+    <div class="form-group">
+        <label for="Editor">Szerkesztő</label>
+        <input type="text" value="Hurtony Péter" disabled class="form-control" id="Editor" />
+    </div>
+    <div class="form-group">
+        <label for="Title">Cím</label>
+        <input type="text" data-bind="value: paper.Title" class="form-control" id="Title" />
+    </div>
+    <a data-toggle="modal" data-target=".rss-list" class="btn btn-primary">
+        <span class="glyphicon glyphicon-list"></span> Hozzáadás a honlapról
+    </a>
+    <a data-toggle="modal" data-target=".new-item" class="btn btn-info">
+        <span class="glyphicon glyphicon-plus"></span> Új hír hozzáadása
+    </a>
+    <br /><br />
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Cím</th>
+                <th>Törzs</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: paper.NewsItems">
+            <tr>
+                <td><a data-bind="attr: { href: Link }, text: Title" target="_blank"></a></td>
+                <td data-bind="html: Body"></td>
+                <td>
+                    <a href="#" data-bind="click: $root.removeItem"><span class="glyphicon glyphicon-remove"></span></a>
+                    <a href="#" data-bind="click: $root.editItem"><span class="glyphicon glyphicon-pencil"></span></a>
+                </td>
+            </tr>
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true)
+        </tbody>
+    </table>
+</form>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.RPublisher, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.RPublisher, new { @class = "form-control", @Value = "kutyamutya" })
-                @Html.ValidationMessageFor(model => model.RPublisher)
+@section modals{
+    <div class="modal fade rss-list" tabindex="-1" role="dialog" aria-labelledby="rssListModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Hírek a honlapról</h4>
+                </div>
+                <div class="modal-body">
+                    <ul data-bind="foreach: RSSItems">
+                        <li><a data-bind="text: Title, attr: { href: '#' }, click: $root.addNews"></a></li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
+                </div>
             </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.REditor, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.REditor, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.REditor)
+    </div>
+    <div class="modal fade edit-item" tabindex="-1" role="dialog" aria-labelledby="editItemModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Hír szerkesztése</h4>
+                </div>
+                <div class="modal-body" data-bind="with: editeditem">
+                    <div class="form-group">
+                        <label for="edititemtitle">Cím</label>
+                        <input id="edititemtitle" data-bind="value: Title" class="form-control" id="" />
+                    </div>
+                    <div class="form-group">
+                        <label for="edititemlink">Link</label>
+                        <input id="edititemlink" data-bind="value: Link" class="form-control" id="" />
+                    </div>
+                    <div class="form-group">
+                        <label for="edititembody">Törzs</label>
+                        <textarea id="edititembody" data-bind="value: Body" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
+                    <button type="button" class="btn btn-success" data-bind="click: saveEdited">Mentés</button>
+                </div>
             </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.User, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.User.FullName, new { @class = "form-control", disabled = "disabled" })
-                @Html.ValidationMessageFor(model => model.Title)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Title)
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+    </div>
+    <div class="modal fade new-item" tabindex="-1" role="dialog" aria-labelledby="newItemModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Új hír hozzáadása</h4>
+                </div>
+                <div class="modal-body" data-bind="with: newitem">
+                    <div class="form-group">
+                        <label for="newitemtitle">Cím</label>
+                        <input id="newitemtitle" data-bind="value: Title" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="newitemlink">Link</label>
+                        <input id="newitemlink" data-bind="value: Link" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="newitembody">Törzs</label>
+                        <textarea id="newitembody" data-bind="value: Body" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
+                    <button type="button" class="btn btn-success" data-bind="click: addNewNews">Mentés</button>
+                </div>
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+@section scripts{
+    @Scripts.Render("~/Scripts/knockout-3.1.0.js")
+    @Scripts.Render("~/Scripts/knockout.mapping-latest.js")
+    <script>
+
+        $(document).ready(function () {
+            var rss = @ViewBag.RSS;
+
+            var asd = @ViewBag.Mvcstring;
+
+            var dsa = {
+                "Id" : 0 ,
+                "UserId" : null,
+                "RPublisher" : "Bakos Asztrik, a Hallgatói Képviselet elnöke",
+                "REditor" : "Görbe Richárd, PR felelős",
+                "Title" : "alap cím",
+                "NewsItems" : [
+                    {"Id" : "", "Title" : "első", "Link" : "http://site.hu", "Body" : "első body"},
+                    {"Id" : "", "Title" : "második", "Link" : "http://bme.hu", "Body" : "második body"},
+                    {"Id" : "", "Title" : "harmadik", "Link" : "", "Body" : "harmadik body"}
+                ]
+            };
+
+            function ViewModel() {
+
+                var self = this;
+                self.paper = ko.mapping.fromJS(dsa);
+
+                self.editeditemid = ko.observable();
+                self.editeditem = ko.observable({
+                    "Id" : "", 
+                    "Title" : "", 
+                    "Link" : "", 
+                    "Body" : ""
+                });
+                self.newitem = ko.observable({
+                    "Id" : "", 
+                    "Title" : "", 
+                    "Link" : "", 
+                    "Body" : ""
+                });
+
+                self.RSSItems = ko.mapping.fromJS(rss);
+
+                // műveletek->törlés
+                self.removeItem = function(item) {
+                    self.paper.NewsItems.remove(item);
+                }
+
+                // műveletek->szerkesztés modal
+                self.editItem = function(item) {
+                    self.editeditemid(self.paper.NewsItems.indexOf(item));
+                    var tmp = ko.mapping.toJS(item);
+                    self.editeditem(ko.mapping.fromJS(tmp));
+
+                    $('.edit-item').modal('show');
+                }
+
+                // műveletek->szerkesztés modal mentés gombja
+                self.saveEdited = function() {
+                    var tmp = ko.mapping.toJS(self.editeditem);
+                    ko.mapping.fromJS(tmp, {}, self.paper.NewsItems()[self.editeditemid()]);
+
+                    $('.edit-item').modal('hide');
+                }
+
+                // hozzáadás honlapról modalon egy hírre kattintva
+                self.addNews = function(item) {
+                    self.paper.NewsItems.push(ko.mapping.fromJS({
+                        "Id" : "", 
+                        "Title" : item.Title, 
+                        "Link" : item.Link, 
+                        "Body" : item.Body
+                    }))
+                }
+
+                // új hír hozzáadása modal
+                self.newNews = function(item) {
+                    self.newitem({
+                        "Id" : "", 
+                        "Title" : "", 
+                        "Link" : "", 
+                        "Body" : ""
+                    });
+
+                    $('.new-item').modal('show');
+                }
+
+                // új hír hozzáadása modal mentés gombja
+                self.addNewNews = function() {
+                    var tmp = ko.mapping.toJS(self.newitem);
+                    self.paper.NewsItems.push(ko.mapping.fromJS(tmp));
+
+                    $('.new-item').modal('hide');
+                }
+            }
+
+            ko.applyBindings(new ViewModel());
+        });
+
+    </script>
+}

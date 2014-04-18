@@ -7,3 +7,5 @@
 /// <reference path="jquery-2.1.0.js" />
 /// <reference path="bootstrap.js" />
 /// <reference path="perseus.permissionspage.js" />
+/// <reference path="knockout-3.1.0.js" />
+/// <reference path="knockout.mapping-latest.js" />

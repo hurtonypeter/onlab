@@ -12,7 +12,7 @@ namespace Perseus.Models
         public int Id { get; set; }
 
         [Display(Name="Szerkesztő")]
-        public User User { get; set; }
+        public string UserId { get; set; }
 
         [Display(Name = "Felelős kiadó")]
         public string RPublisher { get; set; }
@@ -34,7 +34,7 @@ namespace Perseus.Models
             HKNewsPaper retVal = new HKNewsPaper
             {
                 MailId = this.Id,
-                User = this.User,
+                Sender = this.UserId,
                 RPublisher = this.RPublisher,
                 REditor = this.REditor,
                 Title = this.Title
@@ -57,7 +57,7 @@ namespace Perseus.Models
             HKNewsPaperViewModel retVal = new HKNewsPaperViewModel
             {
                 Id = p.MailId,
-                User = p.User,
+                UserId = p.Sender,
                 RPublisher = p.RPublisher,
                 REditor = p.REditor,
                 Title = p.Title
