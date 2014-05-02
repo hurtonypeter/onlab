@@ -33,7 +33,15 @@ namespace Perseus.Security
             }
             else
             {
-                return null;
+                return new User { UserName = "anonymous" };
+            }
+        }
+
+        public static User FindUserById(string id)
+        {
+            using(Entities db = new Entities())
+            {
+                return db.User.FirstOrDefault(s => s.UserId.Equals(id));
             }
         }
 

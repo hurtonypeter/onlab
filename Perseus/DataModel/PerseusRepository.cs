@@ -7,16 +7,18 @@ using Perseus.Helpers;
 using Perseus.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Routing;
+using System.Data.Entity.Migrations;
 
 namespace Perseus.DataModel
 {
     public class PerseusRepository : Repository
     {
-        
+
         public IQueryable<User> GetAllUser()
         {
             return db.User;
@@ -41,7 +43,7 @@ namespace Perseus.DataModel
             if (model.Password != null)
             {
                 user.PasswordHash = UserManager.PasswordHasher.HashPassword(model.Password);
-                
+
             }
 
             List<string> removeIndex = new List<string>();
@@ -94,10 +96,10 @@ namespace Perseus.DataModel
         }
         public void CreateNewRole(Role model)
         {
-            
+
             ApplicationRoleManager rm = new ApplicationRoleManager(new ApplicationRoleStore(new ApplicationDbContext()));
             rm.Create(new ApplicationRole(model.Name)
-            { 
+            {
                 Id = Guid.NewGuid().ToString()
             });
         }
@@ -145,6 +147,28 @@ namespace Perseus.DataModel
         public HKNewsPaper GetHKNewsPaperById(int id)
         {
             return db.HKNewsPaper.SingleOrDefault(p => p.MailId == id);
+        }
+
+        public void AddHKNewsPaper(HKNewsPaper model)
+        {
+            db.HKNewsPaper.Add(model);
+            Save();
+        }
+
+        public void UpdateHKNewsPaper(HKNewsPaper model)
+        {
+            db.HKNewsPaper.AddOrUpdate(model);
+
+            var itemids = model.HKNewsItem.Select(x => x.ItemId);
+            var delete = db.HKNewsItem.Where(s => s.MailId == model.MailId).AsEnumerable().Except<HKNewsItem>(db.HKNewsItem.Where(s => itemids.Contains(s.ItemId)));
+            db.HKNewsItem.RemoveRange(delete);
+
+            foreach (var item in model.HKNewsItem)
+            {
+                db.HKNewsItem.AddOrUpdate(item);
+            }
+
+            Save();
         }
     }
 }

@@ -8,6 +8,13 @@
 }
 
 <h2>@ViewBag.Title</h2>
+<div id="rsserror" style="display: none;">
+    <div class="alert alert-danger">
+        Az RSS betöltése nem sikerült!
+        <a href="#" class="alert alert-link" data-bind="click: loadRss">Próbáld újra!</a>
+    </div>
+</div>
+
 <form role="form">
     <div class="form-group">
         <label for="RPublisher">Felelős kiadó</label>
@@ -19,7 +26,7 @@
     </div>
     <div class="form-group">
         <label for="Editor">Szerkesztő</label>
-        <input type="text" value="Hurtony Péter" disabled class="form-control" id="Editor" />
+        <input type="text" data-bind="value: paper.UserName" disabled class="form-control" id="Editor" />
     </div>
     <div class="form-group">
         <label for="Title">Cím</label>
@@ -31,13 +38,14 @@
     <a data-toggle="modal" data-target=".new-item" class="btn btn-info">
         <span class="glyphicon glyphicon-plus"></span> Új hír hozzáadása
     </a>
+    <a data-bind="click: log" class="btn btn-info">log</a>
     <br /><br />
     <table class="table table-hover table-bordered table-striped">
         <thead>
             <tr>
                 <th>Cím</th>
                 <th>Törzs</th>
-                <th>Műveletek</th>
+                <th style="width: 1%;">Műveletek</th>
             </tr>
         </thead>
         <tbody data-bind="foreach: paper.NewsItems">
@@ -52,6 +60,11 @@
 
         </tbody>
     </table>
+    <div class="text-right">
+        <a class="btn btn-default" href="#">Elvetés</a>
+        <a class="btn btn-primary" data-bind="click: saveDraft">Mentés piszkozatként</a>
+        <a class="btn btn-success" data-bind="click: sendPaper">Küldés</a>
+    </div>
 </form>
 
 @section modals{
@@ -95,7 +108,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Mégsem</button>
                     <button type="button" class="btn btn-success" data-bind="click: saveEdited">Mentés</button>
                 </div>
             </div>
@@ -123,7 +136,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Mégsem</button>
                     <button type="button" class="btn btn-success" data-bind="click: addNewNews">Mentés</button>
                 </div>
             </div>
@@ -132,32 +145,33 @@
 }
 
 @section scripts{
-    @Scripts.Render("~/Scripts/knockout-3.1.0.js")
-    @Scripts.Render("~/Scripts/knockout.mapping-latest.js")
+    @Scripts.Render("~/bundles/knockoutjs")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">google.load("feeds", "1");</script>
     <script>
-
         $(document).ready(function () {
-            var rss = @ViewBag.RSS;
 
-            var asd = @ViewBag.Mvcstring;
+            var model = @ViewBag.model;
 
-            var dsa = {
-                "Id" : 0 ,
-                "UserId" : null,
-                "RPublisher" : "Bakos Asztrik, a Hallgatói Képviselet elnöke",
-                "REditor" : "Görbe Richárd, PR felelős",
-                "Title" : "alap cím",
-                "NewsItems" : [
-                    {"Id" : "", "Title" : "első", "Link" : "http://site.hu", "Body" : "első body"},
-                    {"Id" : "", "Title" : "második", "Link" : "http://bme.hu", "Body" : "második body"},
-                    {"Id" : "", "Title" : "harmadik", "Link" : "", "Body" : "harmadik body"}
-                ]
-            };
+            //var dsa = {
+            //    "Id" : 0 ,
+            //    "UserId" : null,
+            //    "RPublisher" : "Bakos Asztrik, a Hallgatói Képviselet elnöke",
+            //    "REditor" : "Görbe Richárd, PR felelős",
+            //    "Title" : "alap cím",
+            //    "NewsItems" : [
+            //        {"Id" : "", "Title" : "első", "Link" : "http://site.hu", "Body" : "első body"},
+            //        {"Id" : "", "Title" : "második", "Link" : "http://bme.hu", "Body" : "második body"},
+            //        {"Id" : "", "Title" : "harmadik", "Link" : "", "Body" : "harmadik body"}
+            //    ]
+            //};
 
             function ViewModel() {
 
                 var self = this;
-                self.paper = ko.mapping.fromJS(dsa);
+                self.paper = ko.mapping.fromJS(model);
 
                 self.editeditemid = ko.observable();
                 self.editeditem = ko.observable({
@@ -173,7 +187,8 @@
                     "Body" : ""
                 });
 
-                self.RSSItems = ko.mapping.fromJS(rss);
+                // RSS betöltéstől függően a hibamegjelenítés
+                self.RSSItems = ko.observableArray();
 
                 // műveletek->törlés
                 self.removeItem = function(item) {
@@ -226,9 +241,99 @@
 
                     $('.new-item').modal('hide');
                 }
+
+                self.log = function() {
+                    console.log(ko.mapping.toJS(self.paper));
+                }
+
+                // rss betöltése google rss readerrel
+                self.loadRss = function() {
+                    try{
+                        var feed = new google.feeds.Feed("http://vik.hk/rss.xml");
+                        feed.setResultFormat(google.feeds.Feed.JSON_FORMAT);
+                        feed.load(function (result) {
+                            if(!result.error){
+                                $('#rsserror').fadeOut('slow');
+                                self.RSSItems.removeAll();
+                                for(var i = 0; i < result.feed.entries.length; i++){
+                                    var entry = result.feed.entries[i];
+                                    self.RSSItems.push(ko.mapping.fromJS(
+                                        { 
+                                            "Id" : "",
+                                            "Title" : entry.title,
+                                            "Link" : entry.link,
+                                            "Body" : entry.content
+                                        }));
+                                }
+                            }
+                            else {
+                                $('#rsserror').fadeIn('slow');
+                            }
+                        });
+                    }
+                    catch(err){
+                        $('#rsserror').fadeIn('slow');
+                    }
+                    
+                }
+
+                self.loadRss();
+
+                // modell küldése a szerverre
+                self.sendPaper = function() {
+                    var tmp = ko.mapping.toJS(self.paper);
+                    if (tmp.Title == null) {
+                        for (var i = 0; i < tmp.NewsItems.length; i++) {
+                            if(i == 0)
+                                tmp.Title = tmp.NewsItems[i].Title;
+                            else
+                                tmp.Title = tmp.Title + ", " + tmp.NewsItems[i].Title;
+                        }
+                    }
+
+                    ko.utils.postJson('@Url.Action("Save", "HKNews")', { model: tmp });
+                }
+
+                self.saveDraft = function () {
+                    self.paper.IsDraft(true);
+                    self.sendPaper();
+                }
             }
 
+            ko.bindingHandlers.fadeVisible = {
+                init: function(element, valueAccessor) {
+                    // Initially set the element to be instantly visible/hidden depending on the value
+                    var value = valueAccessor();
+                    $(element).toggle(ko.unwrap(value)); // Use "unwrapObservable" so we can handle values that may or may not be observable
+                },
+                update: function(element, valueAccessor) {
+                    // Whenever the value subsequently changes, slowly fade the element in or out
+                    var value = valueAccessor();
+                    ko.unwrap(value) ? $(element).fadeIn() : $(element).fadeOut();
+                }
+            };
+
+            ko.bindingHandlers.sortableList = {
+                init: function(element, valueAccessor) {
+                    var list = valueAccessor();
+                    $(element).sortable({
+                        update: function(event, ui) {
+                            //retrieve our actual data item
+                            var item = ui.item.tmplItem().data;
+                            //figure out its new position
+                            var position = ko.utils.arrayIndexOf(ui.item.parent().children(), ui.item[0]);
+                            //remove the item and add it back in the right spot
+                            if (position >= 0) {
+                                list.remove(item);
+                                list.splice(position, 0, item);
+                            }
+                        }
+                    });
+                }
+            };
+
             ko.applyBindings(new ViewModel());
+
         });
 
     </script>

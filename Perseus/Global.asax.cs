@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Data.Entity.Migrations;
+using Perseus.Filters;
 
 namespace Perseus
 {
@@ -25,6 +26,7 @@ namespace Perseus
             // kidobáljuk a webforms engint, csak razor fusson
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new RazorViewEngine());
+
 
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<DbContext, DbMigrationsConfiguration<DbContext>>());
         }

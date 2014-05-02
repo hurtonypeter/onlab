@@ -9,3 +9,4 @@
 /// <reference path="perseus.permissionspage.js" />
 /// <reference path="knockout-3.1.0.js" />
 /// <reference path="knockout.mapping-latest.js" />
+/// <reference path="jquery-ui-1.10.4.js" />
