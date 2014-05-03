@@ -27,6 +27,9 @@ namespace Perseus.Models
 
         public bool IsNew { get; set; }
 
+        public Nullable<DateTime> Created { get; set; }
+
+        public Nullable<DateTime> Sent { get; set; }
         
         public List<HKNewsItemViewModel> NewsItems { get; set; }
 
@@ -43,7 +46,10 @@ namespace Perseus.Models
                 Sender = this.UserId,
                 RPublisher = this.RPublisher,
                 REditor = this.REditor,
-                Title = this.Title
+                Title = this.Title,
+                IsDraft = this.IsDraft,
+                Sent = this.Sent,
+                Created = this.Created
             };
             foreach (var item in this.NewsItems)
             {
@@ -61,15 +67,18 @@ namespace Perseus.Models
 
         public static HKNewsPaperViewModel ViewModelFromPaper(HKNewsPaper p)
         {
+            
             HKNewsPaperViewModel retVal = new HKNewsPaperViewModel
             {
                 Id = p.MailId,
                 UserId = p.Sender,
-                UserName = AccountHelper.FindUserById(p.Sender).FullName,
+                UserName = AccountHelper.FullNameById(p.Sender),
                 RPublisher = p.RPublisher,
                 REditor = p.REditor,
                 Title = p.Title,
-                IsNew = false
+                IsNew = false,
+                Sent = p.Sent,
+                Created = p.Created
             };
             foreach (var item in p.HKNewsItem)
             {
@@ -80,6 +89,12 @@ namespace Perseus.Models
                     Link = item.Link,
                     Body = item.Body
                 });
+            }
+            if (retVal.UserId == null && retVal.UserName == null && AccountHelper.IsAuthenticated())
+            {
+                var cu = AccountHelper.CurrentUser();
+                retVal.UserName = cu.FullName;
+                retVal.UserId = cu.UserId;
             }
             return retVal;
         }

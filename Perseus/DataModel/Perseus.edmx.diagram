@@ -25,6 +25,8 @@
         <EntityTypeShape EntityType="DataModel.HKNewsPaper" Width="1.5" PointX="7.5" PointY="6.375" />
         <AssociationConnector Association="DataModel.FK_HKNewsItem_To_HKNewsPaper" />
         <AssociationConnector Association="DataModel.FK_HKNewsPaper_To_Users" />
+        <EntityTypeShape EntityType="DataModel.Setting" Width="1.5" PointX="0.75" PointY="5.125" />
+        <AssociationConnector Association="DataModel.FK_Setting_Module" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

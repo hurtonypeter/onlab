@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Routing;
 using System.Data.Entity.Migrations;
+using EntityFramework.Extensions;
 
 namespace Perseus.DataModel
 {
@@ -78,7 +79,7 @@ namespace Perseus.DataModel
 
         public void DeleteUserById(string id)
         {
-            db.User.Remove(GetUserById(id));
+            db.User.Where(u => u.UserId.Equals(id)).Delete();
             Save();
         }
 
@@ -151,6 +152,7 @@ namespace Perseus.DataModel
 
         public void AddHKNewsPaper(HKNewsPaper model)
         {
+            model.Created = DateTime.Now;
             db.HKNewsPaper.Add(model);
             Save();
         }
@@ -169,6 +171,16 @@ namespace Perseus.DataModel
             }
 
             Save();
+        }
+        public void DeleteHKNewsById(int id)
+        {
+            db.HKNewsPaper.Where(s => s.MailId == id).Delete();
+            Save();
+        }
+
+        public IQueryable<HKNewsPaper> GetAllHKNewsPaper()
+        {
+            return db.HKNewsPaper;
         }
     }
 }

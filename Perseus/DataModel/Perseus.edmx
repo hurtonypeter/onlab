@@ -77,6 +77,16 @@
           <Property Name="ApplicationPermission_PermissionId" Type="int" Nullable="false" />
           <Property Name="ApplicationRole_Id" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ModuleId" Type="int" />
+          <Property Name="Key" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Value" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UserId" />
@@ -288,6 +298,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Setting_Module">
+          <End Role="Module" Type="Self.Module" Multiplicity="0..1" />
+          <End Role="Setting" Type="Self.Setting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Module">
+              <PropertyRef Name="ModuleId" />
+            </Principal>
+            <Dependent Role="Setting">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="GetCurrentPermissions" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserId" Type="nvarchar" Mode="In" />
         </Function>
@@ -300,6 +322,7 @@
           <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RolePermission" EntityType="Self.RolePermission" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Setting" EntityType="Self.Setting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserClaim" EntityType="Self.UserClaim" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserLogin" EntityType="Self.UserLogin" Schema="dbo" store:Type="Tables" />
@@ -351,6 +374,10 @@
           <AssociationSet Name="FK_HKNewsPaper_To_Users" Association="Self.FK_HKNewsPaper_To_Users">
             <End Role="User" EntitySet="User" />
             <End Role="HKNewsPaper" EntitySet="HKNewsPaper" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Setting_Module" Association="Self.FK_Setting_Module">
+            <End Role="Module" EntitySet="Module" />
+            <End Role="Setting" EntitySet="Setting" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -411,6 +438,11 @@
             <End Role="User" EntitySet="User" />
             <End Role="HKNewsPaper" EntitySet="HKNewsPaper" />
           </AssociationSet>
+          <EntitySet Name="Setting" EntityType="DataModel.Setting" />
+          <AssociationSet Name="FK_Setting_Module" Association="DataModel.FK_Setting_Module">
+            <End Role="Module" EntitySet="Module" />
+            <End Role="Setting" EntitySet="Setting" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Module">
           <Key>
@@ -419,6 +451,7 @@
           <Property Name="ModuleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModuleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Permission" Relationship="DataModel.FK_dbo_Permission_dbo_Module_ModuleId" FromRole="Module" ToRole="Permission" />
+          <NavigationProperty Name="Setting" Relationship="DataModel.FK_Setting_Module" FromRole="Module" ToRole="Setting" />
         </EntityType>
         <EntityType Name="Permission">
           <Key>
@@ -651,6 +684,29 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModuleId" Type="Int32" />
+          <Property Name="Key" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Module" Relationship="DataModel.FK_Setting_Module" FromRole="Setting" ToRole="Module" />
+        </EntityType>
+        <Association Name="FK_Setting_Module">
+          <End Type="DataModel.Module" Role="Module" Multiplicity="0..1" />
+          <End Type="DataModel.Setting" Role="Setting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Module">
+              <PropertyRef Name="ModuleId" />
+            </Principal>
+            <Dependent Role="Setting">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -784,6 +840,17 @@
                 <ScalarProperty Name="Sent" ColumnName="Sent" />
                 <ScalarProperty Name="Sender" ColumnName="Sender" />
                 <ScalarProperty Name="MailId" ColumnName="MailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Setting">
+            <EntityTypeMapping TypeName="DataModel.Setting">
+              <MappingFragment StoreEntitySet="Setting">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="ModuleId" ColumnName="ModuleId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

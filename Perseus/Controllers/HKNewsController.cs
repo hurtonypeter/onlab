@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Perseus.DataModel;
 using Perseus.Filters;
+using Perseus.Helpers;
 using Perseus.Models;
 using Perseus.Security;
 using System;
@@ -29,10 +30,12 @@ namespace Perseus.Controllers
         // GET: /HKNews/
         public ActionResult Index()
         {
-            return View();
+            var papers = db.GetAllHKNewsPaper().ToList();
+
+            return View(papers);
         }
 
-        public ActionResult New(int id = 0)
+        public ActionResult Edit(int id = 0)
         {
             if(id == 0)
             {
@@ -71,6 +74,11 @@ namespace Perseus.Controllers
         [HttpPost]
         public ActionResult Save([FromJson] HKNewsPaperViewModel model)
         {
+            model.UserId = AccountHelper.CurrentUserId();
+            if(model.IsDraft == false)
+            {
+                model.Sent = DateTime.Now;
+            }
             if (model.IsNew)
             {
                 db.AddHKNewsPaper(model.PaperFromViewModel());
@@ -79,6 +87,23 @@ namespace Perseus.Controllers
             {
                 db.UpdateHKNewsPaper(model.PaperFromViewModel());
             }
+
+            return RedirectToAction("Index", "HKNews");
+        }
+
+        public ActionResult Delete(int id)
+        {
+            db.DeleteHKNewsById(id);
+            return RedirectToAction("Index", "HKNews");
+        }
+
+        public ActionResult Send(int id)
+        {
+            var paper = db.GetHKNewsPaperById(id);
+            paper.Sent = DateTime.Now;
+            paper.IsDraft = false;
+            db.Save();
+            MailHelper.SendHKNews(paper);
 
             return RedirectToAction("Index", "HKNews");
         }

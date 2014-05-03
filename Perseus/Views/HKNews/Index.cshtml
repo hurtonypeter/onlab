@@ -1,8 +1,173 @@
-﻿
+﻿@model IEnumerable<Perseus.DataModel.HKNewsPaper>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "HKNews";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Hírlevelek</h2>
 
+<p>Mutasd a következő hírleveleket:</p>
+<div class="radio">
+    <label>
+        <input type="radio" class="filterradio" name="optionsRadios" id="radio-all" value="all" checked>
+        Összes hírlevél
+    </label>
+</div>
+<div class="radio">
+    <label>
+        <input type="radio" class="filterradio" name="optionsRadios" id="radio-sent" value="sent">
+        Elküldöttek
+    </label>
+</div>
+<div class="radio">
+    <label>
+        <input type="radio" class="filterradio" name="optionsRadios" id="radio-draft" value="draft">
+        Piszkozatok
+    </label>
+</div>
+
+<table id="papers" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Mentve</th>
+            <th>Utoljára elküldve</th>
+            <th>Szerkesztő</th>
+            <th>Cím</th>
+            <th>Státusz</th>
+            <td></td>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Created</td>
+                <td>
+                    @if (item.Sent == null)
+                    {
+                        <text>soha</text>
+                    }
+                    else
+                    {
+                        @item.Sent
+                    }
+                <td>
+                    @if (item.Sender != null)
+                    {
+                        @item.User.FullName
+                    }
+                    else
+                    {
+                        <text>ismeretlen</text>
+                    }
+                </td>
+
+                <td>@item.Title</td>
+                <td>
+                    @if (!item.IsDraft)
+                    {
+                        <span class="label label-success">Elküldve</span>
+                    }
+                    else
+                    {
+                        <span class="label label-default">Piszkozat</span>
+                    }
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                            Műveletek <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>@Html.ActionLink("Szerkesztés", "Edit", "HKNews", new { id = item.MailId }, null)</li>
+                            <li>@Html.ActionLink("Küldés", "Send", "HKNews", new { id = item.MailId }, null)</li>
+                            <li class="divider"></li>
+                            <li>@Html.ActionLink("Törlés", "Delete", "HKNews", new { id = item.MailId }, null)</li>
+                        </ul>
+                    </div>
+                </td>
+                <td>
+                    @item.IsDraft
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+
+@section scripts{
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("http://cdn.datatables.net/plug-ins/e9421181788/integration/bootstrap/3/dataTables.bootstrap.js")
+    <script>
+        $(document).ready(function () {
+            $.fn.dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
+                var all = $('#radio-all').is(':checked');
+
+                if (all)
+                    return true;
+
+                var sent = $('#radio-sent').is(':checked');
+
+                if (sent && aData[6] == "False")
+                    return true;
+
+                var draft = $('#radio-draft').is(':checked');
+
+                if (draft && aData[6] == "True")
+                    return true;
+
+                return false;
+            });
+
+            var oTable = $('#papers').dataTable({
+                "oLanguage": {
+                    "sEmptyTable": "Nincs rendelkezésre álló adat",
+                    "sInfo": "Találatok: _START_ - _END_ Összesen: _TOTAL_",
+                    "sInfoEmpty": "Nulla találat",
+                    "sInfoFiltered": "(_MAX_ összes rekord közül szűrve)",
+                    "sInfoPostFix": "",
+                    "sInfoThousands": " ",
+                    "sLengthMenu": "_MENU_ találat oldalanként",
+                    "sLoadingRecords": "Betöltés...",
+                    "sProcessing": "Feldolgozás...",
+                    "sSearch": "Keresés:&nbsp;",
+                    "sZeroRecords": "Nincs a keresésnek megfelelő találat",
+                    "oPaginate": {
+                        "sFirst": "Első",
+                        "sPrevious": "Előző",
+                        "sNext": "Következő",
+                        "sLast": "Utolsó"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": aktiválja a növekvő rendezéshez",
+                        "sSortDescending": ": aktiválja a csökkenő rendezéshez"
+                    }
+                },
+                "aaSorting": [[1, "desc"]],
+                "aoColumnDefs": [
+                    {
+                        'bSortable': false,
+                        'aTargets': [4, 5],
+                    },
+                    { "bVisible": false, "aTargets": [6] }
+                ]
+            });
+
+            $('#papers_length select').addClass('form-control');
+            $('#papers_filter input').addClass('form-control');
+
+            $('.filterradio').click(function (e) {
+                oTable.fnDraw();
+            });
+        });
+
+    </script>
+
+}
+
+@section styles{
+    @Styles.Render("http://cdn.datatables.net/plug-ins/e9421181788/integration/bootstrap/3/dataTables.bootstrap.css")
+
+}

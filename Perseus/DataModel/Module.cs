@@ -17,11 +17,13 @@ namespace Perseus.DataModel
         public Module()
         {
             this.Permission = new HashSet<Permission>();
+            this.Setting = new HashSet<Setting>();
         }
     
         public int ModuleId { get; set; }
         public string ModuleName { get; set; }
     
         public virtual ICollection<Permission> Permission { get; set; }
+        public virtual ICollection<Setting> Setting { get; set; }
     }
 }

@@ -30,6 +30,11 @@ namespace Perseus
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/datatables").Include(
+                        "~/Scripts/DataTables-1.9.4/media/js/jquery.dataTables.js"));
+            bundles.Add(new StyleBundle("~/Content/datatables").Include(
+                      "~/Content/DataTables-1.9.4/media/css/jquery.dataTables.css"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));

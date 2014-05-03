@@ -45,9 +45,28 @@ namespace Perseus.Security
             }
         }
 
+        public static string FullNameById(string id)
+        {
+            using (Entities db = new Entities())
+            {
+                var user = db.User.FirstOrDefault(s => s.UserId.Equals(id));
+                return (user == null) ? null : user.FullName;
+            }
+        }
+
         public static bool IsAuthenticated()
         {
             return HttpContext.Current.User.Identity.IsAuthenticated;
+        }
+
+        public static string CurrentUserId()
+        {
+            return HttpContext.Current.User.Identity.GetUserId();
+        }
+
+        public static string CurrentUserName()
+        {
+            return HttpContext.Current.User.Identity.GetUserName();
         }
 
         private static List<string> CurrentPermissions()
