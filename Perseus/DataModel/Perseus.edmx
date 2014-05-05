@@ -82,7 +82,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ModuleId" Type="int" />
+          <Property Name="Bag" Type="nvarchar" MaxLength="50" />
           <Property Name="Key" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Value" Type="nvarchar(max)" />
           <Property Name="Description" Type="nvarchar(max)" />
@@ -298,18 +298,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Setting_Module">
-          <End Role="Module" Type="Self.Module" Multiplicity="0..1" />
-          <End Role="Setting" Type="Self.Setting" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Module">
-              <PropertyRef Name="ModuleId" />
-            </Principal>
-            <Dependent Role="Setting">
-              <PropertyRef Name="ModuleId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Function Name="GetCurrentPermissions" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserId" Type="nvarchar" Mode="In" />
         </Function>
@@ -375,10 +363,6 @@
             <End Role="User" EntitySet="User" />
             <End Role="HKNewsPaper" EntitySet="HKNewsPaper" />
           </AssociationSet>
-          <AssociationSet Name="FK_Setting_Module" Association="Self.FK_Setting_Module">
-            <End Role="Module" EntitySet="Module" />
-            <End Role="Setting" EntitySet="Setting" />
-          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -439,10 +423,6 @@
             <End Role="HKNewsPaper" EntitySet="HKNewsPaper" />
           </AssociationSet>
           <EntitySet Name="Setting" EntityType="DataModel.Setting" />
-          <AssociationSet Name="FK_Setting_Module" Association="DataModel.FK_Setting_Module">
-            <End Role="Module" EntitySet="Module" />
-            <End Role="Setting" EntitySet="Setting" />
-          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Module">
           <Key>
@@ -451,7 +431,6 @@
           <Property Name="ModuleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModuleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Permission" Relationship="DataModel.FK_dbo_Permission_dbo_Module_ModuleId" FromRole="Module" ToRole="Permission" />
-          <NavigationProperty Name="Setting" Relationship="DataModel.FK_Setting_Module" FromRole="Module" ToRole="Setting" />
         </EntityType>
         <EntityType Name="Permission">
           <Key>
@@ -689,24 +668,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModuleId" Type="Int32" />
+          <Property Name="Bag" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Key" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Module" Relationship="DataModel.FK_Setting_Module" FromRole="Setting" ToRole="Module" />
         </EntityType>
-        <Association Name="FK_Setting_Module">
-          <End Type="DataModel.Module" Role="Module" Multiplicity="0..1" />
-          <End Type="DataModel.Setting" Role="Setting" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Module">
-              <PropertyRef Name="ModuleId" />
-            </Principal>
-            <Dependent Role="Setting">
-              <PropertyRef Name="ModuleId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -849,7 +815,7 @@
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="Key" ColumnName="Key" />
-                <ScalarProperty Name="ModuleId" ColumnName="ModuleId" />
+                <ScalarProperty Name="Bag" ColumnName="Bag" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

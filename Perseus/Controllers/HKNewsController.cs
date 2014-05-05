@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Perseus.API;
 using Perseus.DataModel;
 using Perseus.Filters;
 using Perseus.Helpers;
@@ -6,6 +7,7 @@ using Perseus.Models;
 using Perseus.Security;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
@@ -20,12 +22,6 @@ namespace Perseus.Controllers
     {
         PerseusRepository db = new PerseusRepository();
 
-        class RSSItem
-        {
-            public string Title { get; set; }
-            public string Link { get; set; }
-            public string Body { get; set; }
-        }
         //
         // GET: /HKNews/
         public ActionResult Index()
@@ -37,13 +33,13 @@ namespace Perseus.Controllers
 
         public ActionResult Edit(int id = 0)
         {
-            if(id == 0)
+            if (id == 0)
             {
                 HKNewsPaperViewModel model = new HKNewsPaperViewModel
                 {
                     UserId = AccountHelper.CurrentUser().UserId,
-                    RPublisher = "Bakos Asztrik, a Hallgatói Képviselet elnöke",
-                    REditor = "Görbe Richárd, PR felelős",
+                    RPublisher = SettingsApi.GetValue("hknews", "rpublisher"),
+                    REditor = SettingsApi.GetValue("hknews", "reditor"),
                     UserName = AccountHelper.CurrentUser().FullName,
                     IsNew = true
                 };
@@ -75,7 +71,7 @@ namespace Perseus.Controllers
         public ActionResult Save([FromJson] HKNewsPaperViewModel model)
         {
             model.UserId = AccountHelper.CurrentUserId();
-            if(model.IsDraft == false)
+            if (model.IsDraft == false)
             {
                 model.Sent = DateTime.Now;
             }
@@ -107,5 +103,60 @@ namespace Perseus.Controllers
 
             return RedirectToAction("Index", "HKNews");
         }
-	}
+
+        public ActionResult Settings()
+        {
+            var settings = SettingsApi.GetBag("hknews");
+
+            FileStream file = new FileStream(Server.MapPath("~\\MailTemplates\\HKNews.cshtml"), FileMode.OpenOrCreate, FileAccess.Read);
+            StreamReader sr = new StreamReader(file);
+
+            ViewBag.MailTemplate = sr.ReadToEnd();
+
+            sr.Close();
+            file.Close();
+
+            return View(settings);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult SaveTemplate(string template)
+        {
+
+            try
+            {
+                FileStream file = new FileStream(Server.MapPath("~\\MailTemplates\\HKNews.cshtml"), FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                StreamWriter sw = new StreamWriter(file);
+
+                sw.Write(template);
+
+                sw.Close();
+                file.Close();
+
+                return this.Json(new { saved = true });
+            }
+            catch
+            {
+                return this.Json(new { saved = false });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SaveSetting(string setting)
+        {
+
+            try
+            {
+                Perseus.DataModel.Setting s = JsonConvert.DeserializeObject<Perseus.DataModel.Setting>(setting);
+                SettingsApi.UpdateSetting(s.Bag, s.Key, s.Value, s.Description);
+
+                return this.Json(new { saved = true });
+            }
+            catch
+            {
+                return this.Json(new { saved = false });
+            }
+        }
+    }
 }

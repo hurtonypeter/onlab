@@ -40,7 +40,6 @@
     <a data-toggle="modal" data-target=".new-item" class="btn btn-info">
         <span class="glyphicon glyphicon-plus"></span> Új hír hozzáadása
     </a>
-    <a data-bind="click: log" class="btn btn-info">log</a>
     <br /><br />
     <table class="table table-hover table-bordered table-striped">
         <thead>
@@ -340,4 +339,12 @@
         });
 
     </script>
+}
+
+@section styles{
+    <style>
+        input{
+            max-width: 600px;
+        }
+    </style>
 }
