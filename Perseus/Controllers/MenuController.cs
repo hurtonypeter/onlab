@@ -1,4 +1,5 @@
-﻿using Perseus.DataModel;
+﻿using Microsoft.Owin;
+using Perseus.DataModel;
 using Perseus.Models;
 using Perseus.Security;
 using System;
@@ -36,7 +37,7 @@ namespace Perseus.Controllers
                         {
                             menu.Children.Add(new MenuViewModel
                             {
-                                Path = child.LinkPath,
+                                Path = new PathString(child.LinkPath).ToUriComponent(),
                                 Title = child.LinkTitle,
                                 Classes = Request.Url.AbsoluteUri.Contains(child.LinkPath) ? "active" : ""
                             });
